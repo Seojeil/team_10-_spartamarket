@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 
+
 class Product(models.Model):
     title = models.CharField(max_length=50)
     content = models.TextField()
@@ -9,7 +10,7 @@ class Product(models.Model):
     image = models.ImageField(
         upload_to='images/',
         blank=True
-        )
+    )
     price = models.IntegerField()
     # 글작성자
     # author = models.ForeignKey(
@@ -19,14 +20,15 @@ class Product(models.Model):
     #     )
     # 찜하기
     # like_users = models.ManyToManyField(
-    #     get_user_model(), 
+    #     get_user_model(),
     #     related_name='like_products',
     #     null=True,
     #     )
-    
+
     def __str__(self):
         return self.title
-    
+
+
 class Comment(models.Model):
     product = models.ForeignKey(
         Product,
@@ -42,6 +44,6 @@ class Comment(models.Model):
     #     on_delete=models.CASCADE,
     #     related_name='comment'
     #     )
-    
+
     def __str__(self):
         return self.content
