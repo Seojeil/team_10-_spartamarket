@@ -2,4 +2,22 @@
 
 {% block content %}
 <h1>SPARTA MARKET</h1>
+
+<p>
+    <a href="{% url 'products:create' %}">
+        <button>글작성하기</button>
+    </a>
+</p>
+
+{% for product in products %}
+    <hr>
+    <a href='{% url 'products:details' product.pk %}'>
+        <h3>{{ product.title }}</h3>
+    </a>
+    <p>
+        작성시간: {{ product.created_at }}
+    </p>
+    
+{% endfor %}
+
 {% endblock content %}
