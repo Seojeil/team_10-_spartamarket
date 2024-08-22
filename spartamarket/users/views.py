@@ -8,14 +8,3 @@ def profile(request, username):
         "username": username,
     }
     return render(request, "users/profile.html", context)
-
-
-def product(request, username):
-    context = {
-        "username":username,
-    }
-    return render(request, "product/profile.html", context)
-
-
-
-

@@ -59,7 +59,7 @@ def modify(request):
         form = CustomUserChangeForm(request.POST, instance=request.user)  # 제출된 데이터를 바탕으로 폼 인스턴스 생성
         if form.is_valid():  # 폼이 유효한 경우
             form.save()  # 사용자 정보를 업데이트
-            return redirect("index")  # 'index' URL로 리디렉션
+            return redirect("users:profile", username=request.user.username)  # 'index' URL로 리디렉션
     else:
         form = CustomUserChangeForm(instance=request.user)  # GET 요청일 경우, 현재 사용자 데이터를 바탕으로 폼 생성
     context = {"form": form}  # 템플릿에 전달할 컨텍스트 생성
