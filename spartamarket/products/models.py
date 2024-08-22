@@ -12,13 +12,11 @@ class Product(models.Model):
         blank=True
     )
     price = models.IntegerField()
-    # 글작성자
     # author = models.ForeignKey(
     #     get_user_model(),
     #     on_delete=models.CASCADE,
     #     related_name='products'
     #     )
-    # 찜하기
     # like_users = models.ManyToManyField(
     #     get_user_model(),
     #     related_name='like_products',
@@ -38,7 +36,6 @@ class Comment(models.Model):
     content = models.CharField(max_length=120)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    # 댓글 작성자
     # author = models.ForeignKey(
     #     get_user_model(),
     #     on_delete=models.CASCADE,
