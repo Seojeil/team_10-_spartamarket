@@ -62,7 +62,7 @@ def profile(request, username):
     context = {
         "user": user,
     }
-    return render(request, "users/profile.html", context)
+    return render(request, "accounts/profile.html", context)
 
 
 @require_http_methods(["GET", "POST"])  # 이 뷰는 GET과 POST 요청만 허용

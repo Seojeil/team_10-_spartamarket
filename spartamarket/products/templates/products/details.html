@@ -4,7 +4,7 @@
 <h1> {{ product.title }} </h1>
 <p>
     작성자: 
-    <a href="{% url 'users:profile' username=product.author %}">
+    <a href="{% url 'accounts:profile' username=product.author %}">
         {{ product.author }}
     </a>
 </p>

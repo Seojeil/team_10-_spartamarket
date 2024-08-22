@@ -11,7 +11,7 @@
 
 {% if user.is_authenticated %}
     <p>
-        <a href="{% url 'users:profile' username=user.username %}">
+        <a href="{% url 'accounts:profile' username=user.username %}">
             <button>마이페이지로</button>
         </a>
     </p>
@@ -21,15 +21,18 @@
 
 {% for product in products %}
     <hr>
-    <a href='{% url 'products:details' product.pk %}'>
-        <h3>{{ product.title }}</h3>
-    </a>
+    <h3>
+        <a href='{% url 'products:details' product.pk %}'>
+            {{ product.title }}
+        </a> 
+        [{{ product.comments.count }}]
+    </h3>
     <p>
         찜한 사람: {{ product.like_users.count }} 명
     </p>
     <p>
         작성자: 
-        <a href="{% url 'users:profile' username=product.author %}">
+        <a href="{% url 'accounts:profile' username=product.author %}">
             {{ product.author }}
         </a>
     </p>
