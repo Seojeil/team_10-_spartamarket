@@ -20,7 +20,7 @@ def login(request):
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
             auth_login(request, form.get_user())
-            # next_url = request.GET("next") or "index"
+            next_url = request.GET("next") or "index"
             return redirect('index')
         
     else:
