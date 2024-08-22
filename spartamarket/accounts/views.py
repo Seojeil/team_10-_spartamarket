@@ -1,6 +1,7 @@
 from django.shortcuts import (
     render,
     redirect,
+    get_object_or_404,
     )
 from django.contrib.auth.forms import AuthenticationForm
 from django.views.decorators.http import (
@@ -12,6 +13,7 @@ from django.contrib.auth import (
     logout as auth_logout,
     update_session_auth_hash,
     )
+from django.contrib.auth import get_user_model
 from .forms import SignUpForm,CustomUserChangeForm
 from django.contrib.auth.forms import  PasswordChangeForm  
 
@@ -52,6 +54,15 @@ def signup(request):
         form = SignUpForm()
     context = {"form": form}
     return render(request, "accounts/signup.html", context)
+
+
+@require_http_methods(["GET","POST"])
+def profile(request, username):
+    user = get_object_or_404(get_user_model(), username=username)
+    context = {
+        "user": user,
+    }
+    return render(request, "users/profile.html", context)
 
 
 @require_http_methods(["GET", "POST"])  # 이 뷰는 GET과 POST 요청만 허용
