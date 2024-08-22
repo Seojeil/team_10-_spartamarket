@@ -2,14 +2,26 @@
 
 {%block content%}
 
-<h1> {{ username }} 의 프로필 페이지 .</h1>
-<h3> 유저네임 : {{ username }}</h3>
-<p><a href="{% url 'index' %}">홈으로 돌아가기</a></p>
+<h1> {{ user.username }} 의 프로필 페이지 .</h1>
+<p>
+    유저네임 : {{ user.username }}<br><br>
+    email : {{ user.email }}
+</p>
+<p>
+    <a href="{% url 'index' %}">홈으로 돌아가기</a>
+</p>
 
 <p>
     <a href="{% url 'accounts:modify' %}">
         <button>내 정보 수정</button>
     </a>
+</p>
+
+<p>
+    <form action={% url 'accounts:logout' %} method='POST'>
+        {% csrf_token %}
+        <button type='submit'>로그아웃</button>
+    </form>
 </p>
 
 <p>

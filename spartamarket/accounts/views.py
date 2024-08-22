@@ -7,11 +7,13 @@ from django.views.decorators.http import (
     require_http_methods,
     require_POST
     )
-from django.contrib.auth import login as auth_login
-from django.contrib.auth import logout as auth_logout
+from django.contrib.auth import (
+    login as auth_login,
+    logout as auth_logout,
+    update_session_auth_hash,
+    )
 from .forms import SignUpForm,CustomUserChangeForm
 from django.contrib.auth.forms import  PasswordChangeForm  
-from django.contrib.auth import update_session_auth_hash
 
 
 @require_http_methods(['GET', 'POST'])
@@ -22,7 +24,6 @@ def login(request):
             auth_login(request, form.get_user())
             # next_url = request.GET("next") or "index"
             return redirect('index')
-        
     else:
         form = AuthenticationForm()
         
