@@ -7,12 +7,14 @@ from django.views.decorators.http import require_POST
 from .models import Product
 from .forms import ProductForm
 
+
 def index(request):
     products = Product.objects.all().order_by('-created_at')
     context = {
         'products':products,
     }
     return render(request, 'products/index.html', context)
+
 
 def create(request):
     if request.method == 'POST':
@@ -27,6 +29,7 @@ def create(request):
     }
     return render(request, 'products/create.html', context)
 
+
 def details(request, pk):
     product = get_object_or_404(Product, pk=pk)
     context = {
@@ -34,11 +37,13 @@ def details(request, pk):
     }
     return render(request, 'products/details.html', context)
 
+
 @require_POST
 def delete(request, pk):
     product = get_object_or_404(Product, pk=pk)
     product.delete()
     return redirect('index')
+
 
 def update(request, pk):
     product = get_object_or_404(Product, pk=pk)
@@ -55,10 +60,8 @@ def update(request, pk):
     }
     return render(request, 'products/update.html', context)
 
-@require_POST  # 이 뷰는 POST 요청만 허용
-def delete(request):
-    if request.user.is_authenticated:  # 사용자가 인증된 상태일 경우
-        request.user.delete()  # 사용자 계정 삭제
-        auth_logout(request)  # 로그아웃 처리
-    return redirect("index")  # 'index' URL로 돌아가기
+
+def comments(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    pass
 
