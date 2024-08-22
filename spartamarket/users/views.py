@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_POST, require_http_methods
 from django.contrib.auth import logout as auth_logout
-from django.contrib.auth.forms import  UserChangeForm, UserCreationForm  # 사용자 생성 및 변경 폼을 위한 Django 폼 임포트
-from .forms import CustomUserChangeForm, CustomUserCreationForm
-
+from django.contrib.auth.forms import  PasswordChangeForm  
+from .forms import CustomUserChangeForm
+from django.contrib.auth import update_session_auth_hash
 
 
 @require_http_methods(["GET","POST"]) 
