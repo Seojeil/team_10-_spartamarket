@@ -9,7 +9,6 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('products/', include('products.urls')),
     path('accounts/', include('accounts.urls')),
-    path('users/', include('users.urls')),
 ]
 
 if settings.DEBUG:

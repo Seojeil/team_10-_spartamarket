@@ -45,6 +45,14 @@ def signup(request):
     return render(request, "accounts/signup.html", context)
 
 
+@require_http_methods(["GET","POST"]) 
+def profile(request, username):
+    context = {
+        "username": username,
+    }
+    return render(request, "accounts/profile.html", context)
+
+
 @require_http_methods(["GET", "POST"])  # 이 뷰는 GET과 POST 요청만 허용
 def modify(request):
     if request.method == "POST":  # 요청이 POST일 경우 (사용자가 업데이트 폼을 제출했을 때)
