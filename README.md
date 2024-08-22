@@ -52,7 +52,8 @@
 ### 임선오
 - 역할
 ### 정성원
-- 역할
+- 회원가입 기능
+- base.html css 
 
 ## Version
 - asgiref==3.8.1
