@@ -2,7 +2,7 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,venv,visualstudiocode,pycharm,macos,windows
 
 ### Customs ###
-
+/spartamarket/media/images/
 
 ### macOS ###
 # General
