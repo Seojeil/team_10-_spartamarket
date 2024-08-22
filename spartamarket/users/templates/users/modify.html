@@ -1,0 +1,18 @@
+{%extends 'base.html'%}  <!-- 'base.html' 템플릿을 확장 -->
+
+{% block head %}
+<h3> 유저네임 : {{username}}</h3>
+<p><a href="{% 'uesrs:index' %}">홈으로 돌아가기</a></p>
+{% endblock head %}
+
+
+{%block content%}  <!-- 'content' 블록의 시작을 알림 -->
+<H1>회원 정보 수정</H1>  <!-- 제목: 회원 정보 수정 -->
+
+<form action="" method="post">  <!-- 정보 수정을 위한 폼, POST 메서드를 사용하여 데이터를 전송 -->
+    {%csrf_token%}  <!-- CSRF 공격을 방지하기 위한 토큰 -->
+    {{form.as_p}}  <!-- 폼 필드를 <p> 태그로 렌더링 -->
+    <button type="submit">수정</button>  <!-- 폼 제출 버튼 -->
+</form>
+
+{%endblock content%}  <!-- 'content' 블록의 끝을 알림 -->
