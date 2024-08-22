@@ -1,6 +1,12 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import (
+    render,
+    redirect,
+    )
 from django.contrib.auth.forms import AuthenticationForm
-from django.views.decorators.http import require_http_methods, require_POST
+from django.views.decorators.http import (
+    require_http_methods,
+    require_POST
+    )
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from .forms import SignUpForm,CustomUserChangeForm
@@ -23,11 +29,13 @@ def login(request):
     context = {'form': form}
     return render(request, 'accounts/login.html', context)
 
+
 @require_POST
 def logout(request):
     if request.user.is_authenticated:
         auth_logout(request)
     return redirect('index')
+
 
 def signup(request):
     if request.method == 'POST':
@@ -58,7 +66,6 @@ def modify(request):
     return render(request, "accounts/modify.html", context)  # 'accounts/update.html' 템플릿을 렌더링
 
 
-
 def change_password(request):
     if request.method == "POST":  # 요청이 POST일 경우 (사용자가 비밀번호 변경 폼을 제출했을 때)
         form = PasswordChangeForm(request.user, request.POST)  # 제출된 데이터를 바탕으로 폼 인스턴스 생성
@@ -70,3 +77,11 @@ def change_password(request):
         form = PasswordChangeForm(request.user)  # GET 요청일 경우 빈 폼 인스턴스 생성
     context = {'form':form}  # 템플릿에 전달할 컨텍스트 생성
     return render(request, "accounts/change_password.html", context)  # 'accounts/change_password.html' 템플릿을 렌더링
+
+
+@require_POST  # 이 뷰는 POST 요청만 허용
+def delete(request):
+    if request.user.is_authenticated:  # 사용자가 인증된 상태일 경우
+        request.user.delete()  # 사용자 계정 삭제
+        auth_logout(request)  # 로그아웃 처리
+    return redirect("index")  # 'index' URL로 돌아가기
