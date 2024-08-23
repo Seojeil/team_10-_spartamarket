@@ -13,6 +13,7 @@
     <nav class="navbar bg-primary" data-bs-theme="dark">
       <a href="{% url 'index' %}">홈으로 돌아가기</a>
       {% if user.is_authenticated %}
+      {{ request.user.username }}
       <a href="{% url 'accounts:profile' request.user.username %}">개인페이지</a>
       {% endif %}
       <a href="{% url 'accounts:signup' %}">회원가입</a>
