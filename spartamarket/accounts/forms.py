@@ -2,6 +2,8 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.urls import reverse  # URL 패턴을 문자열로 가져오기 위한 함수 임포트
+from .models import Profile
+
 
 
 User = get_user_model()
@@ -35,3 +37,9 @@ class CustomUserChangeForm(UserChangeForm):  # 사용자 변경을 위한 커스
             ).format(f"{reverse('accounts:change_password')}")  # 비밀번호 변경 URL을 포함
             self.fields["password"].help_text = password_help_text  # 비밀번호 필드에 도움말 텍스트 설정
 
+
+
+class ProfileUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ("image",)

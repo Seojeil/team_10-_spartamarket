@@ -13,6 +13,11 @@ from .forms import SignUpForm,CustomUserChangeForm
 from django.contrib.auth.forms import  PasswordChangeForm  
 from django.contrib.auth import update_session_auth_hash
 
+from .forms import ProfileUpdateForm
+from django.contrib.auth.decorators import login_required
+
+
+
 
 @require_http_methods(['GET', 'POST'])
 def login(request):
@@ -20,7 +25,7 @@ def login(request):
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
             auth_login(request, form.get_user())
-            next_url = request.GET("next") or "index"
+            # next_url = request.GET("next") or "index"
             return redirect('index')
         
     else:
@@ -57,6 +62,7 @@ def signup(request):
 def profile(request, username):
     context = {
         "username": username,
+        "profile": request.user.profile,
     }
     return render(request, "accounts/profile.html", context)
 
@@ -67,7 +73,7 @@ def modify(request):
         form = CustomUserChangeForm(request.POST, instance=request.user)  # 제출된 데이터를 바탕으로 폼 인스턴스 생성
         if form.is_valid():  # 폼이 유효한 경우
             form.save()  # 사용자 정보를 업데이트
-            return redirect("users:profile", username=request.user.username)  # 'index' URL로 리디렉션
+            return redirect("accounts:profile", username=request.user.username)  # 'index' URL로 리디렉션
     else:
         form = CustomUserChangeForm(instance=request.user)  # GET 요청일 경우, 현재 사용자 데이터를 바탕으로 폼 생성
     context = {"form": form}  # 템플릿에 전달할 컨텍스트 생성
@@ -93,3 +99,20 @@ def delete(request):
         request.user.delete()  # 사용자 계정 삭제
         auth_logout(request)  # 로그아웃 처리
     return redirect("index")  # 'index' URL로 돌아가기
+
+
+
+@login_required
+def profile_update(request):
+    if request.method == 'POST':
+        form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
+        if form.is_valid():
+            form.save()
+            return redirect('accounts:profile', username=request.user.username)  # 프로필 페이지로 리디렉션
+    else:
+        form = ProfileUpdateForm(instance=request.user.profile)
+    
+    context = {
+        'form': form
+    }
+    return render(request, 'accounts/profile_update.html', context)

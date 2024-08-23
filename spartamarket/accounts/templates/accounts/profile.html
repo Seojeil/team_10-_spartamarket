@@ -4,7 +4,6 @@
 
 <p><a href="{% url 'index' %}">홈으로 돌아가기</a></p>
 <h1> {{ username }} 의 프로필 페이지 .</h1>
-<h3> 유저네임 : {{ username }}</h3>
 
 <p>
     <a href="{% url 'accounts:modify' %}">
@@ -13,10 +12,22 @@
 </p>
 
 <p>
-    <form action={% url 'accounts:delete' %} method='POST'>
+    <form action= "{% url 'accounts:delete' %}" method='POST'>
         {% csrf_token %}
         <button type='submit'>회원 탈퇴</button>
     </form>
 </p>
+
+<form action= "{% url 'accounts:profile_update' %}" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">업로드</button>
+</form>
+
+{% if user.profile.image %}
+    <img src="{{ accounts.profile.image.url }}" alt="프로필">
+{% else %}
+    <p>프로필 이미지가 설정되지 않았습니다.</p>
+{% endif %}
 
 {%endblock content%}
