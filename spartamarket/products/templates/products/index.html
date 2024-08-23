@@ -1,12 +1,19 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>SPARTA MARKET</h1>
+<h1>글 목록</h1>
 
 <p>
     <a href="{% url 'products:create' %}">
         <button>글작성하기</button>
     </a>
+</p>
+
+<!-- 정렬기능 -->
+<p>
+    <a href="?sort=date">날짜순 | </a> 
+    <a href="?sort=likes">인기순 | </a>
+    <a href="?sort=comments">댓글순</a>
 </p>
 
 {% if user.is_authenticated %}
@@ -19,30 +26,42 @@
 {% endif %}
 
 
-{% for product in products %}
-    <hr>
-    <h3>
-        <a href='{% url 'products:details' product.pk %}'>
-            {{ product.title }}
-        </a> 
-        [{{ product.comments.count }}]
-    </h3>
-    <p>
-        조회수: {{ product.hits }}
-    </p>
-    <p>
-        찜한 사람: {{ product.like_users.count }} 명
-    </p>
-    <p>
-        작성자: 
-        <a href="{% url 'accounts:profile' username=product.author %}">
-            {{ product.author }}
-        </a>
-    </p>
-    <p>
-        작성시간: {{ product.created_at }}
-    </p>
-    
-{% endfor %}
+<!-- Bootstrap 제품 카드 그리드  -->
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for product in products %}
+    <!-- 카드 -->
+    <div class="col">
+        <div class="card h-100">
+
+            <!-- 사진 -->
+            {% if product.image %}
+            <img src="{{ product.image.url }}" class="card-img-top mx-auto d-block">
+            {% endif %}
+
+            <!-- 내용 -->
+            <div class="card-body">
+                <h5 class="card-title">
+                    <a href='{% url 'products:details' product.pk %}'>
+                        {{ product.title }}
+                    </a> 
+                    [{{ product.comments.count }}]
+                </h5>
+                <p class="card-text">조회수: {{ product.hits }}</p>
+                <p class="card-text">찜한 사람: {{ product.like_users.count }} 명</p>
+                <p class="card-text">작성자: 
+                    <a href="{% url 'accounts:profile' username=product.author %}">
+                        {{ product.author }}
+                    </a>
+                </p>
+            </div>
+
+            <!-- 날짜 표기 -->
+            <div class="card-footer">
+                <small class="text-muted">작성시간: {{ product.created_at }}</small>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
 
 {% endblock content %}

@@ -10,7 +10,7 @@ from django.views.decorators.http import (
 from django.contrib.auth.decorators import login_required
 from .models import Product, Comment
 from .forms import ProductForm, CommentForm
-
+from django.db.models import Count
 
 def index(request):
     products = Product.objects.all().order_by('-created_at')
@@ -114,3 +114,18 @@ def like(request, pk):
             product.save()
         return redirect('products:details', pk=pk)
     return redirect('accounts:login')
+
+# 제품 포스트 정렬 
+def index(request):
+    sort = request.GET.get('sort', 'date')  # Default to sorting by date
+    if sort == 'likes':
+        products = Product.objects.annotate(like_count=Count('like_users')).order_by('-like_count', '-created_at')
+    elif sort == 'comments':
+        products = Product.objects.annotate(comment_count=Count('comments')).order_by('-comment_count', '-created_at')
+    else:  # Default is date sorting
+        products = Product.objects.all().order_by('-created_at')
+
+    context = {
+        'products': products,
+    }
+    return render(request, 'products/index.html', context)
