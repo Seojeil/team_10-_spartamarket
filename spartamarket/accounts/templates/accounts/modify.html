@@ -1,12 +1,7 @@
 {%extends 'base.html'%}  <!-- 'base.html' 템플릿을 확장 -->
 
-{% block head %}
-<h3> 유저네임 : {{username}}</h3>
-<p><a href="{% url 'index' %}">홈으로 돌아가기</a></p>
-{% endblock head %}
-
-
-{%block content%}  <!-- 'content' 블록의 시작을 알림 -->
+{%block content%}
+  <!-- 'content' 블록의 시작을 알림 -->
 <H1>회원 정보 수정</H1>  <!-- 제목: 회원 정보 수정 -->
 
 <form action="" method="post">  <!-- 정보 수정을 위한 폼, POST 메서드를 사용하여 데이터를 전송 -->
