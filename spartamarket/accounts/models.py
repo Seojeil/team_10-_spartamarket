@@ -31,3 +31,8 @@ def create_profile(sender, instance, created, **kwargs):
 def save_profile(sender, instance, **kwargs):
     instance.profile.save()
 
+
+    # image = models.ImageField(
+    #     upload_to='images/',
+    #     blank=True
+    #     )
