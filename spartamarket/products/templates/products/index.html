@@ -9,6 +9,16 @@
     </a>
 </p>
 
+{% if user.is_authenticated %}
+    <p>
+        <a href="{% url 'accounts:profile' username=user.username %}">
+            <button>마이페이지로</button>
+        </a>
+    </p>
+
+{% endif %}
+
+
 {% for product in products %}
     <hr>
     <a href='{% url 'products:details' product.pk %}'>

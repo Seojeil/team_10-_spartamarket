@@ -6,6 +6,7 @@ from django.shortcuts import (
 from django.views.decorators.http import require_POST
 from .models import Product
 from .forms import ProductForm
+from django.contrib.auth import logout as auth_logout
 
 
 def index(request):
@@ -36,13 +37,6 @@ def details(request, pk):
         'product': product,
     }
     return render(request, 'products/details.html', context)
-
-
-@require_POST
-def delete(request, pk):
-    product = get_object_or_404(Product, pk=pk)
-    product.delete()
-    return redirect('index')
 
 
 def update(request, pk):
