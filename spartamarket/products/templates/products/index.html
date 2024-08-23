@@ -21,9 +21,24 @@
 
 {% for product in products %}
     <hr>
-    <a href='{% url 'products:details' product.pk %}'>
-        <h3>{{ product.title }}</h3>
-    </a>
+    <h3>
+        <a href='{% url 'products:details' product.pk %}'>
+            {{ product.title }}
+        </a> 
+        [{{ product.comments.count }}]
+    </h3>
+    <p>
+        조화수: {{ product.hits }}
+    </p>
+    <p>
+        찜한 사람: {{ product.like_users.count }} 명
+    </p>
+    <p>
+        작성자: 
+        <a href="{% url 'accounts:profile' username=product.author %}">
+            {{ product.author }}
+        </a>
+    </p>
     <p>
         작성시간: {{ product.created_at }}
     </p>
