@@ -25,8 +25,9 @@ def login(request):
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
             auth_login(request, form.get_user())
-            next_url = request.GET("next") or "index"
-            return redirect('index')
+            # 해당 코드는 관련기능을 완성하시고 활성화 해주세요. 오류가 발생합니다.
+            # next_url = request.GET("next") or "index"
+            return redirect("index")
     else:
         form = AuthenticationForm()
         
