@@ -81,7 +81,6 @@ def update(request, pk):
     else:
         return redirect('articles:details', product.pk)
 
-
 @login_required
 def comments(request, pk):
     product = get_object_or_404(Product, pk=pk)
