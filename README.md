@@ -69,6 +69,7 @@
 ### 정성원
 - 회원가입 기능
 - base.html css 
+- 오류 수정
 
 ## Version
 - asgiref==3.8.1

@@ -28,7 +28,7 @@ class Product(models.Model):
     def clean(self):
         super().clean()
         if self.price >= 999999999:
-            raise ValidationError("판매 금액은 999999999 까지 입력 가능합니다.")
+            raise ValidationError("판매 금액은 999,999,999 까지 입력 가능합니다.")
 
     def __str__(self):
         return self.title
