@@ -30,7 +30,20 @@
 </p>
 {% endif %}
 
-<h3>{{ user.username }}님이 찜한 목록</h3><hr>
+<form method="POST">
+    {% csrf_token %}
+    <select name="product_option" id="product_option">
+        <option value="liked">찜목록 보기</option>
+        <option value="all">작성글 보기</option>
+    </select>
+    <button type="submit">확인</button>
+</form><br>
+{% if option == 'all' %}
+<h3>{{ user.username }}님이 작성한 글 목록</h3>
+{% else %}
+<h3>{{ user.username }}님이 찜한 목록</h3>
+{% endif %}
+<hr>
 {% for product in products %}
 <h3>
     <a href='{% url 'products:details' product.pk %}'>
