@@ -3,6 +3,9 @@
 {% block content %}
 <h1> {{ product.title }} </h1>
 <p>
+    조화수: {{ product.hits }}
+</p>
+<p>
     작성자: 
     <a href="{% url 'accounts:profile' username=product.author %}">
         {{ product.author }}

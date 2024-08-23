@@ -5,7 +5,7 @@ class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
         fields = '__all__'
-        exclude = ('author', 'like_users', )
+        exclude = ('author', 'like_users', 'hits',)
         
 class CommentForm(forms.ModelForm):
     class Meta:

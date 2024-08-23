@@ -39,6 +39,8 @@ def create(request):
 
 def details(request, pk):
     product = get_object_or_404(Product, pk=pk)
+    product.hits += 1
+    product.save()
     comments = product.comments.all()
     comment_form = CommentForm()
     context = {

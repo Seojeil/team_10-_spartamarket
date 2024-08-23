@@ -12,6 +12,7 @@ class Product(models.Model):
         blank=True
     )
     price = models.IntegerField()
+    hits = models.IntegerField(default=0)
     author = models.ForeignKey(
         get_user_model(),
         on_delete=models.CASCADE,

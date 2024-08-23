@@ -12,10 +12,11 @@ from django.contrib.auth import (
     login as auth_login,
     logout as auth_logout,
     update_session_auth_hash,
+    get_user_model,
     )
-from django.contrib.auth import get_user_model
+from products.models import Product
 from .forms import SignUpForm,CustomUserChangeForm
-from django.contrib.auth.forms import  PasswordChangeForm  
+from django.contrib.auth.forms import PasswordChangeForm
 
 
 @require_http_methods(['GET', 'POST'])
@@ -59,8 +60,10 @@ def signup(request):
 @require_http_methods(["GET","POST"])
 def profile(request, username):
     user = get_object_or_404(get_user_model(), username=username)
+    products = Product.objects.filter(like_users=user)
     context = {
         "user": user,
+        'products':products,
     }
     return render(request, "accounts/profile.html", context)
 
