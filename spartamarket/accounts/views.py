@@ -77,7 +77,9 @@ def modify(request):
             return redirect("users:profile", username=request.user.username)  # 'index' URL로 리디렉션
     else:
         form = CustomUserChangeForm(instance=request.user)  # GET 요청일 경우, 현재 사용자 데이터를 바탕으로 폼 생성
-    context = {"form": form}  # 템플릿에 전달할 컨텍스트 생성
+    context = {
+        "form": form
+        }  # 템플릿에 전달할 컨텍스트 생성
     return render(request, "accounts/modify.html", context)  # 'accounts/update.html' 템플릿을 렌더링
 
 
@@ -90,7 +92,9 @@ def change_password(request):
             return redirect("index")  # 'index' URL로 리디렉션
     else:
         form = PasswordChangeForm(request.user)  # GET 요청일 경우 빈 폼 인스턴스 생성
-    context = {'form':form}  # 템플릿에 전달할 컨텍스트 생성
+    context = {
+        'form':form
+        }  # 템플릿에 전달할 컨텍스트 생성
     return render(request, "accounts/change_password.html", context)  # 'accounts/change_password.html' 템플릿을 렌더링
 
 
