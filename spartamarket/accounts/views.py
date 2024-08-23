@@ -19,7 +19,6 @@ from products.models import Product
 from .forms import SignUpForm,CustomUserChangeForm
 from django.contrib.auth.forms import PasswordChangeForm
 from .forms import ProfileUpdateForm
-from django.contrib.auth.decorators import login_required
 
 
 
@@ -112,6 +111,7 @@ def modify(request):
     return render(request, "accounts/modify.html", context)  # 'accounts/update.html' 템플릿을 렌더링
 
 
+@require_http_methods(["GET", "POST"])  # 이 뷰는 GET과 POST 요청만 허용
 def change_password(request):
     if request.method == "POST":  # 요청이 POST일 경우 (사용자가 비밀번호 변경 폼을 제출했을 때)
         form = PasswordChangeForm(request.user, request.POST)  # 제출된 데이터를 바탕으로 폼 인스턴스 생성

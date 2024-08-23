@@ -2,20 +2,22 @@
 
 {%block content%}
 
-<h1> {{ user.username }} 의 프로필 페이지 </h1>
+<h1> {{ user.username }} 의 프로필 페이지 </h1><br>
 <p>
-    유저네임 : {{ user.username }}<br><br>
+    유저네임 : {{ user.username }}<br>
     email : {{ user.email }}
 </p>
-<img src="{{accounts.image.url}}" alt="">
+
+<img src="{{ profile.image.url }}" alt="profile" width="300" height="350">
 
 
 {% if request.user.username == user.username %}
-<p>
+<p><br>
     <a href="{% url 'accounts:modify' %}">
         <button>내 정보 수정</button>
     </a>
 </p>
+
 
 
 <p>
@@ -70,7 +72,7 @@
 <hr>
 {% endfor %}
 
-<img src="{{ profile.image.url }}" alt="profile">
+
 
 {%endblock content%}
 
