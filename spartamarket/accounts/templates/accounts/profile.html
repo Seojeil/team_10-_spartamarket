@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{%block content%}
+
+
+<h1> {{ user.username }} 의 프로필 페이지 </h1>
+<p>
+    유저네임 : {{ user.username }}<br><br>
+    email : {{ user.email }}
+</p>
+
+{% if request.user.username == user.username %}
+<p>
+    <a href="{% url 'accounts:modify' %}">
+        <button>내 정보 수정</button>
+    </a>
+</p>
+
+
+<p>
+    <form action={% url 'accounts:delete' %} method='POST'>
+        {% csrf_token %}
+        <button type='submit'>회원 탈퇴</button>
+    </form>
+</p>
+{% else %}
+<p>
+    {% comment %} 아직 개발중입니다. {% endcomment %}
+    <button>이 회원을 팔로우</button>
+</p>
+{% endif %}
+
+<h3>{{ user.username }}님이 찜한 목록</h3><hr>
+{% for product in products %}
+<h3>
+    <a href='{% url 'products:details' product.pk %}'>
+        {{ product.title }}
+    </a> 
+    [{{ product.comments.count }}]
+</h3>
+<p>
+    조화수: {{ product.hits }}
+</p>
+<p>
+    찜한 사람: {{ product.like_users.count }} 명
+</p>
+<p>
+    작성자: 
+    <a href="{% url 'accounts:profile' username=product.author %}">
+        {{ product.author }}
+    </a>
+</p>
+<p>
+    작성시간: {{ product.created_at }}
+</p>
+<hr>
+{% endfor %}
+
+{%endblock content%}

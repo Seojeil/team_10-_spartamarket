@@ -8,5 +8,3 @@ class User(AbstractUser):
     #     upload_to='images/',
     #     blank=True
     #     )
-
-
