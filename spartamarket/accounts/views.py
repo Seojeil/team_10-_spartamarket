@@ -60,6 +60,14 @@ def signup(request):
 
 @require_http_methods(["GET","POST"]) 
 def profile(request, username):
+    if request.method == 'POST':
+        form = ProfileUpdateForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('accounts:profile', username=request.user.username)  # 프로필 페이지로 리디렉션
+    else:
+        form = ProfileUpdateForm(instance=request.user.profile)
+        
     context = {
         "username": username,
         "profile": request.user.profile,
@@ -101,18 +109,3 @@ def delete(request):
     return redirect("index")  # 'index' URL로 돌아가기
 
 
-
-@login_required
-def profile_update(request):
-    if request.method == 'POST':
-        form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
-        if form.is_valid():
-            form.save()
-            return redirect('accounts:profile', username=request.user.username)  # 프로필 페이지로 리디렉션
-    else:
-        form = ProfileUpdateForm(instance=request.user.profile)
-    
-    context = {
-        'form': form
-    }
-    return render(request, 'accounts/profile_update.html', context)

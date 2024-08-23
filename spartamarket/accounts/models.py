@@ -3,16 +3,11 @@ from django.contrib.auth.models import AbstractUser
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.contrib.auth.models import User
-from django.contrib.auth import get_user_model
 
 
 
 class User(AbstractUser):
     pass
-    # image = models.ImageField(
-    #     upload_to='images/',
-    #     blank=True
-    #     )
     
 
 class Profile(models.Model):

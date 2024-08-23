@@ -1,9 +1,12 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {%block content%}
 
 <p><a href="{% url 'index' %}">홈으로 돌아가기</a></p>
 <h1> {{ username }} 의 프로필 페이지 .</h1>
+
+<!-- <img src="{% static 'accounts/default.jpg' %}" alt="사진"> -->
+<img src="{{accounts.image.url}}" alt="">
 
 <p>
     <a href="{% url 'accounts:modify' %}">
@@ -18,16 +21,12 @@
     </form>
 </p>
 
-<form action= "{% url 'accounts:profile_update' %}" method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">업로드</button>
+
+
 </form>
 
-{% if user.profile.image %}
-    <img src="{{ accounts.profile.image.url }}" alt="프로필">
-{% else %}
-    <p>프로필 이미지가 설정되지 않았습니다.</p>
-{% endif %}
+<img src="{{ accounts.image.url }}" alt="프로필">
+
+
 
 {%endblock content%}
