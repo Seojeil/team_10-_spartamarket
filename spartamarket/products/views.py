@@ -2,11 +2,11 @@ from django.shortcuts import (
     render,
     redirect,
     get_object_or_404,
-    )
+)
 from django.views.decorators.http import (
     require_POST,
     require_http_methods
-    )
+)
 from django.contrib.auth.decorators import login_required
 from .models import Product, Comment
 from .forms import ProductForm, CommentForm
@@ -44,9 +44,9 @@ def details(request, pk):
     comments = product.comments.all()
     comment_form = CommentForm()
     context = {
-        'product':product,
-        'comments':comments,
-        'comment_form':comment_form,
+        'product': product,
+        'comments': comments,
+        'comment_form': comment_form,
     }
     return render(request, 'products/details.html', context)
 
@@ -68,14 +68,14 @@ def update(request, pk):
         if request.method == 'POST':
             form = ProductForm(request.POST, request.FILES, instance=product)
             if form.is_valid():
-                    product = form.save()
-                    return redirect("products:details", product.pk)
+                product = form.save()
+                return redirect("products:details", product.pk)
         else:
             form = ProductForm(instance=product)
-            
+
         context = {
-            'product':product,
-            'form':form,
+            'product': product,
+            'form': form,
         }
         return render(request, 'products/update.html', context)
     else:
