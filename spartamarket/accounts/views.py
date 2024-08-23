@@ -82,8 +82,6 @@ def profile(request, username):
         'products': products,
         'option': selected_option,
     }
-    return render(request, "accounts/profile.html", context)
-    
     if request.method == 'POST':
         form = ProfileUpdateForm(request.POST, request.FILES)
         if form.is_valid():
