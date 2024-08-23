@@ -21,8 +21,8 @@ class Product(models.Model):
     )
     like_users = models.ManyToManyField(
         get_user_model(),
-        related_name='like_products',
-        null=True
+        related_name='like_products'
+        
     )
 
     def clean(self):
