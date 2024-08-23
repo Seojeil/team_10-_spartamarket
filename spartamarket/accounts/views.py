@@ -14,6 +14,7 @@ from django.contrib.auth import (
     update_session_auth_hash,
     get_user_model,
     )
+from django.contrib.auth.decorators import login_required
 from products.models import Product
 from .forms import SignUpForm,CustomUserChangeForm
 from django.contrib.auth.forms import PasswordChangeForm
@@ -25,13 +26,16 @@ def login(request):
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
             auth_login(request, form.get_user())
-            # 해당 코드는 관련기능을 완성하시고 활성화 해주세요. 오류가 발생합니다.
-            # next_url = request.GET("next") or "index"
-            return redirect("index")
+            next_url = request.GET.get('next') or "index"
+            if next_url == '/accounts/login/':
+                next_url = "index"
+            return redirect(next_url)
     else:
         form = AuthenticationForm()
         
-    context = {'form': form}
+    context = {
+        'form': form
+        }
     return render(request, 'accounts/login.html', context)
 
 
@@ -54,27 +58,27 @@ def signup(request):
             print(form.errors)
     else:
         form = SignUpForm()
-    context = {"form": form}
+    context = {
+        "form": form
+        }
     return render(request, "accounts/signup.html", context)
 
 
-@require_http_methods(["GET","POST"])
+@login_required
+@require_http_methods(["GET", "POST"])
 def profile(request, username):
-    if request.user.is_authenticated:
-        user = get_object_or_404(get_user_model(), username=username)
-        selected_option = request.POST.get("product_option")
-        if request.POST.get("product_option") == 'all':
-            products = Product.objects.filter(author=user).order_by('-created_at')
-        else:
-            products = Product.objects.filter(like_users=user).order_by('-created_at')
-        context = {
-            "user": user,
-            'products': products,
-            'option': selected_option,
-        }
-        return render(request, "accounts/profile.html", context)
+    user = get_object_or_404(get_user_model(), username=username)
+    selected_option = request.POST.get("product_option")
+    if request.POST.get("product_option") == 'all':
+        products = Product.objects.filter(author=user).order_by('-created_at')
     else:
-        return redirect("accounts:signup")
+        products = Product.objects.filter(like_users=user).order_by('-created_at')
+    context = {
+        "user": user,
+        'products': products,
+        'option': selected_option,
+    }
+    return render(request, "accounts/profile.html", context)
 
 
 @require_http_methods(["GET", "POST"])  # 이 뷰는 GET과 POST 요청만 허용

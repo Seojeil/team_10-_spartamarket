@@ -3,14 +3,20 @@ from django.contrib.auth import get_user_model
 from django.forms import ValidationError
 
 
-class Product(models.Model):
-    title = models.CharField(max_length=50)
-    content = models.TextField()
+class TimeStampeModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+
+class Product(TimeStampeModel):
+    title = models.CharField(max_length=50)
+    content = models.TextField()
     image = models.ImageField(
         upload_to='images/',
-        blank=True
+        blank=True,
     )
     price = models.IntegerField()
     hits = models.IntegerField(default=0)
@@ -22,7 +28,6 @@ class Product(models.Model):
     like_users = models.ManyToManyField(
         get_user_model(),
         related_name='like_products',
-        null=True,
     )
 
     def clean(self):
@@ -34,15 +39,13 @@ class Product(models.Model):
         return self.title
 
 
-class Comment(models.Model):
+class Comment(TimeStampeModel):
     product = models.ForeignKey(
         Product,
         on_delete=models.CASCADE,
         related_name='comments'
     )
     content = models.CharField(max_length=120)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
     author = models.ForeignKey(
         get_user_model(),
         on_delete=models.CASCADE,
