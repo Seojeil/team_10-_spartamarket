@@ -62,10 +62,15 @@ def signup(request):
 def profile(request, username):
     if request.user.is_authenticated:
         user = get_object_or_404(get_user_model(), username=username)
-        products = Product.objects.filter(like_users=user)
+        selected_option = request.POST.get("product_option")
+        if request.POST.get("product_option") == 'all':
+            products = Product.objects.filter(author=user).order_by('-created_at')
+        else:
+            products = Product.objects.filter(like_users=user).order_by('-created_at')
         context = {
             "user": user,
-            'products':products,
+            'products': products,
+            'option': selected_option,
         }
         return render(request, "accounts/profile.html", context)
     else:
