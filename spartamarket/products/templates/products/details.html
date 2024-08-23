@@ -61,7 +61,6 @@
     {% endif %}
     </form>
 </p>
-{% endif %}
 <p>
     <form action="{% url 'products:comments' product.pk %}" method='POST'>
         {% csrf_token %}
@@ -69,6 +68,13 @@
         <button type='submit'>댓글 작성</button>
     </form>
 </p>
+{% else %}
+<p>
+    <a href="{% url 'accounts:login' %}?next={{ request.path }}">
+        <button>로그인하고 서비스 이용하기</button>
+    </a>
+</p>
+{% endif %}
 <hr>
 <p>
     {% for comment in comments %}
