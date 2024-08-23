@@ -16,7 +16,7 @@ class Product(TimeStampeModel):
     content = models.TextField()
     image = models.ImageField(
         upload_to='images/',
-        blank=True
+        blank=True,
     )
     price = models.IntegerField()
     hits = models.IntegerField(default=0)
@@ -28,7 +28,6 @@ class Product(TimeStampeModel):
     like_users = models.ManyToManyField(
         get_user_model(),
         related_name='like_products',
-        null=True,
     )
 
     def clean(self):
