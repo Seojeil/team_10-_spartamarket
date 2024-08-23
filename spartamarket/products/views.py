@@ -116,13 +116,13 @@ def like(request, pk):
 
 # 제품 포스트 정렬 
 def index(request):
-    sort = request.GET.get('sort', 'date')  # Default to sorting by date
+    sort = request.GET.get('sort', 'date')  # 디폴트 날짜로 정렬 
     if sort == 'likes':
-        products = Product.objects.annotate(like_count=Count('like_users')).order_by('-like_count', '-created_at')
+        products = Product.objects.annotate(like_count=Count('like_users')).order_by('-like_count', '-created_at') #찜 정렬
     elif sort == 'comments':
-        products = Product.objects.annotate(comment_count=Count('comments')).order_by('-comment_count', '-created_at')
-    else:  # Default is date sorting
-        products = Product.objects.all().order_by('-created_at')
+        products = Product.objects.annotate(comment_count=Count('comments')).order_by('-comment_count', '-created_at') # 댓글 정렬
+    else:  
+        products = Product.objects.all().order_by('-created_at') # 날짜 정렬
 
     context = {
         'products': products,
