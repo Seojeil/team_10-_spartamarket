@@ -73,7 +73,12 @@
 <p>
     {% for comment in comments %}
     {{ comment.content }}<br>
-    작성자: {{ comment.author }}<br>
+    <p>
+        작성자: 
+        <a href="{% url 'accounts:profile' username=product.author %}">
+            {{ comment.author }}
+        </a>
+    </p>
     작성시간: {{ comment.created_at }}
     {% if request.user == comment.author %}
     <form action="{% url 'products:comments_delete' comment.pk %}" method='POST'>

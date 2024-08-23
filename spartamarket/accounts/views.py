@@ -60,13 +60,16 @@ def signup(request):
 
 @require_http_methods(["GET","POST"])
 def profile(request, username):
-    user = get_object_or_404(get_user_model(), username=username)
-    products = Product.objects.filter(like_users=user)
-    context = {
-        "user": user,
-        'products':products,
-    }
-    return render(request, "accounts/profile.html", context)
+    if request.user.is_authenticated:
+        user = get_object_or_404(get_user_model(), username=username)
+        products = Product.objects.filter(like_users=user)
+        context = {
+            "user": user,
+            'products':products,
+        }
+        return render(request, "accounts/profile.html", context)
+    else:
+        return redirect("accounts:signup")
 
 
 @require_http_methods(["GET", "POST"])  # 이 뷰는 GET과 POST 요청만 허용
