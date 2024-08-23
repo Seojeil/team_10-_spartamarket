@@ -10,7 +10,7 @@ class Product(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     image = models.ImageField(
         upload_to='images/',
-        blank=True
+        blank=True,
     )
     price = models.IntegerField()
     hits = models.IntegerField(default=0)
@@ -22,7 +22,6 @@ class Product(models.Model):
     like_users = models.ManyToManyField(
         get_user_model(),
         related_name='like_products',
-        
     )
 
     def clean(self):
