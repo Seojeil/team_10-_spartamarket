@@ -1,4 +1,4 @@
-from django.shortcuts import(
+from django.shortcuts import (
     render,
     redirect,
     get_object_or_404,
@@ -15,7 +15,7 @@ from .forms import ProductForm, CommentForm
 def index(request):
     products = Product.objects.all().order_by('-created_at')
     context = {
-        'products':products,
+        'products': products,
     }
     return render(request, 'products/index.html', context)
 
@@ -32,7 +32,7 @@ def create(request):
     else:
         form = ProductForm()
     context = {
-        'form':form
+        'form': form
     }
     return render(request, 'products/create.html', context)
 
