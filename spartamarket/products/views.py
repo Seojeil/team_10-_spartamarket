@@ -10,15 +10,22 @@ from django.views.decorators.http import (
 from django.contrib.auth.decorators import login_required
 from .models import Product, Comment, HashTag
 from .forms import ProductForm, CommentForm
+from django.db.models import Count
 
-
+# 제품 포스트 정렬 
 def index(request):
-    products = Product.objects.all().order_by('-created_at')
+    sort = request.GET.get('sort', 'date')  # 디폴트 날짜로 정렬 
+    if sort == 'likes':
+        products = Product.objects.annotate(like_count=Count('like_users')).order_by('-like_count', '-created_at') #찜 정렬
+    elif sort == 'comments':
+        products = Product.objects.annotate(comment_count=Count('comments')).order_by('-comment_count', '-created_at') # 댓글 정렬
+    else:  
+        products = Product.objects.all().order_by('-created_at') # 날짜 정렬
+
     context = {
         'products': products,
     }
     return render(request, 'products/index.html', context)
-
 
 @login_required
 def create(request):
@@ -124,3 +131,4 @@ def like(request, pk):
             product.save()
         return redirect('products:details', pk=pk)
     return redirect('accounts:login')
+
