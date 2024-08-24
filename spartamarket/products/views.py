@@ -27,6 +27,7 @@ def index(request):
     }
     return render(request, 'products/index.html', context)
 
+
 @login_required
 def create(request):
     if request.method == 'POST':
@@ -142,4 +143,3 @@ def like(request, pk):
             product.save()
         return redirect('products:details', pk=pk)
     return redirect('accounts:login')
-
