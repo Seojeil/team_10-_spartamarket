@@ -27,6 +27,7 @@ def index(request):
     }
     return render(request, 'products/index.html', context)
 
+
 @login_required
 def create(request):
     if request.method == 'POST':
@@ -37,12 +38,7 @@ def create(request):
             product.author = request.user
             product.save()
             if hashtags:
-                hashtags = hashtags.split(',')
-                for name in hashtags:
-                    if name != '':
-                        hashtag, created = HashTag.objects.get_or_create(name=name)
-                        product.hashtags.add(hashtag)
-            product.save()
+                create_hashtag(hashtags, product)
             return redirect('products:details', product.pk)
     else:
         form = ProductForm()
@@ -90,12 +86,7 @@ def update(request, pk):
             if form.is_valid():
                 product = form.save()
                 if hashtags:
-                    hashtags = hashtags.split(',')
-                    for name in hashtags:
-                        if name != '':
-                            hashtag, created = HashTag.objects.get_or_create(name=name)
-                            product.hashtags.add(hashtag)
-                product.save()
+                    create_hashtag(hashtags, product)
                 return redirect("products:details", product.pk)
         else:
             form = ProductForm(instance=product)
@@ -143,3 +134,10 @@ def like(request, pk):
         return redirect('products:details', pk=pk)
     return redirect('accounts:login')
 
+def create_hashtag(hashtags, product):
+    hashtags = hashtags.split(',')
+    for name in hashtags:
+        if name != '':
+            hashtag, created = HashTag.objects.get_or_create(name=name)
+            product.hashtags.add(hashtag)
+        product.save()
