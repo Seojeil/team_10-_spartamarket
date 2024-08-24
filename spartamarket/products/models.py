@@ -11,6 +11,13 @@ class TimeStampeModel(models.Model):
         abstract = True
 
 
+class HashTag(models.Model):
+    name = models.CharField(max_length=30, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Product(TimeStampeModel):
     title = models.CharField(max_length=50)
     content = models.TextField()
@@ -29,11 +36,17 @@ class Product(TimeStampeModel):
         get_user_model(),
         related_name='like_products',
     )
+    hashtags = models.ManyToManyField(
+        HashTag,
+        related_name='products',
+    )
 
     def clean(self):
         super().clean()
         if self.price >= 999999999:
-            raise ValidationError("판매 금액은 999,999,999 까지 입력 가능합니다.")
+            raise ValidationError(
+                "판매 금액은 999,999,999 까지 입력 가능합니다."
+                )
 
     def __str__(self):
         return self.title
@@ -54,3 +67,4 @@ class Comment(TimeStampeModel):
 
     def __str__(self):
         return self.content
+    

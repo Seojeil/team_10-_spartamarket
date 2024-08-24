@@ -6,6 +6,9 @@
 <form action="{% url 'products:create' %}" method='POST' enctype='multipart/form-data'>
     {% csrf_token %}
     {{ form.as_p }}
+    <label for="hashtags">hashtags:</label>
+    <input type="text" id="hashtags" name="hashtags" oninput='HachTagInput(event)' required size="30" maxlength="50" placeholder="쉼표로 구분해서 입력하세요.">
+    <br><br>
     <button type='submit'>작성완료</button>
 </form>
 <br>

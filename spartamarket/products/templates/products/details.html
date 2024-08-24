@@ -42,6 +42,14 @@
 </p>
 
 <p>
+    {% if product.hashtags %}
+        {% for hashtag in hashtags %}
+            #{{ hashtag }}
+        {% endfor %}
+    {% endif %}
+</p>
+
+<p>
     <a href="{% url 'index' %}">
         <button>글목록으로</button>
     </a>
