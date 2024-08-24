@@ -8,7 +8,7 @@ from django.views.decorators.http import (
     require_http_methods
 )
 from django.contrib.auth.decorators import login_required
-from .models import Product, Comment
+from .models import Product, Comment, HashTag
 from .forms import ProductForm, CommentForm
 from django.db.models import Count
 
@@ -31,9 +31,17 @@ def index(request):
 def create(request):
     if request.method == 'POST':
         form = ProductForm(request.POST, request.FILES)
+        hashtags = request.POST.get('hashtags')
         if form.is_valid():
             product = form.save(commit=False)
             product.author = request.user
+            product.save()
+            if hashtags:
+                hashtags = hashtags.split(',')
+                for name in hashtags:
+                    if name != '':
+                        hashtag, created = HashTag.objects.get_or_create(name=name)
+                        product.hashtags.add(hashtag)
             product.save()
             return redirect('products:details', product.pk)
     else:
@@ -48,12 +56,14 @@ def details(request, pk):
     product = get_object_or_404(Product, pk=pk)
     product.hits += 1
     product.save()
+    hashtags = product.hashtags.all()
     comments = product.comments.all()
     comment_form = CommentForm()
     context = {
         'product': product,
         'comments': comments,
         'comment_form': comment_form,
+        'hashtags': hashtags,
     }
     return render(request, 'products/details.html', context)
 
@@ -71,22 +81,34 @@ def delete(request, pk):
 @require_http_methods(['GET', 'POST'])
 def update(request, pk):
     product = get_object_or_404(Product, pk=pk)
+    current_hashtags = product.hashtags.all()
     if request.user == product.author:
         if request.method == 'POST':
+            product.hashtags.clear()
             form = ProductForm(request.POST, request.FILES, instance=product)
+            hashtags = request.POST.get('hashtags')
             if form.is_valid():
                 product = form.save()
+                if hashtags:
+                    hashtags = hashtags.split(',')
+                    for name in hashtags:
+                        if name != '':
+                            hashtag, created = HashTag.objects.get_or_create(name=name)
+                            product.hashtags.add(hashtag)
+                product.save()
                 return redirect("products:details", product.pk)
         else:
             form = ProductForm(instance=product)
 
         context = {
             'product': product,
+            'current_hashtags': current_hashtags,
             'form': form,
         }
         return render(request, 'products/update.html', context)
     else:
         return redirect('articles:details', product.pk)
+
 
 @login_required
 def comments(request, pk):
