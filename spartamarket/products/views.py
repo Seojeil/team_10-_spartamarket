@@ -81,17 +81,28 @@ def delete(request, pk):
 @require_http_methods(['GET', 'POST'])
 def update(request, pk):
     product = get_object_or_404(Product, pk=pk)
+    current_hashtags = product.hashtags.all()
     if request.user == product.author:
         if request.method == 'POST':
+            product.hashtags.clear()
             form = ProductForm(request.POST, request.FILES, instance=product)
+            hashtags = request.POST.get('hashtags')
             if form.is_valid():
                 product = form.save()
+                if hashtags:
+                    hashtags = hashtags.split(',')
+                    for name in hashtags:
+                        if name != '':
+                            hashtag, created = HashTag.objects.get_or_create(name=name)
+                            product.hashtags.add(hashtag)
+                product.save()
                 return redirect("products:details", product.pk)
         else:
             form = ProductForm(instance=product)
 
         context = {
             'product': product,
+            'current_hashtags': current_hashtags,
             'form': form,
         }
         return render(request, 'products/update.html', context)

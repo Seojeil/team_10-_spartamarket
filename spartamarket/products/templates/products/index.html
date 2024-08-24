@@ -22,7 +22,6 @@
             <button>마이페이지로</button>
         </a>
     </p>
-
 {% endif %}
 
 
@@ -53,6 +52,13 @@
                         {{ product.author }}
                     </a>
                 </p>
+                {% if product.hashtags.exists %}
+                <p>
+                    {% for hashtag in product.hashtags.all %}
+                        #{{ hashtag.name }}
+                    {% endfor %}
+                </p>
+        {% endif %}
             </div>
 
             <!-- 날짜 표기 -->

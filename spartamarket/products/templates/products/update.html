@@ -6,6 +6,17 @@
 <form action="{% url 'products:update' product.pk %}" method='POST' enctype='multipart/form-data'>
     {% csrf_token %}
     {{ form.as_p }}
+    <p>
+        {% if product.hashtags.exists %}
+        현재 해시태그: 
+            {% for current_hashtag in current_hashtags %}
+                #{{ current_hashtag }}
+            {% endfor %}
+        {% endif %}
+    </p>
+    <label for="hashtags">hashtags:</label>
+    <input type="text" id="hashtags" name="hashtags" oninput='HachTagInput(event)' size="30" maxlength="50" placeholder="쉼표로 구분해서 입력하세요.">
+    <br><br>
     <button type='submit'>작성완료</button>
 </form>
 <br>
