@@ -15,7 +15,18 @@
     <a href="?sort=likes">인기순 | </a>
     <a href="?sort=comments">댓글순</a>
 </p>
-
+<p>
+    <form action="{% url 'index' %}" method='GET'>
+        <input type="text" id="search" name="search">
+        <select name="search_type" id="lang">
+            <option value="title">제목</option>
+            <option value="content">내용</option>
+            <option value="username">회원명</option>
+            <option value="hashtag">해시태그</option>
+        </select>
+        <button type='submit'>검색</button>
+    </form>
+</p>
 {% if user.is_authenticated %}
     <p>
         <a href="{% url 'accounts:profile' username=user.username %}">
@@ -55,7 +66,9 @@
                 {% if product.hashtags.exists %}
                 <p>
                     {% for hashtag in product.hashtags.all %}
-                        #{{ hashtag.name }}
+                        <a href="{% url 'index' %}?search={{ hashtag.name }}&search_type=hashtag">
+                            #{{ hashtag.name }}
+                        </a>&nbsp;
                     {% endfor %}
                 </p>
         {% endif %}
