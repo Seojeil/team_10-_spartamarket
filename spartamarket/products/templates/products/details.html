@@ -44,7 +44,9 @@
 <p>
     {% if product.hashtags %}
         {% for hashtag in hashtags %}
-            #{{ hashtag }}
+            <a href="{% url 'index' %}?search={{ hashtag.name }}&search_type=hashtag">
+                #{{ hashtag }}
+            </a>&nbsp;
         {% endfor %}
     {% endif %}
 </p>
