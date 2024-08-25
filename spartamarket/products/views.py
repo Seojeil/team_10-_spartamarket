@@ -158,10 +158,12 @@ def like(request, pk):
         return redirect('products:details', pk=pk)
     return redirect('accounts:login')
 
+
 def create_hashtag(hashtags, product):
     hashtags = hashtags.split(',')
     for name in hashtags:
-        if name != '':
+        # 빈 데이터에 대한 예외처리(입력폼에 콤마만 연속으로 입력한 경우)
+        if name != '': # 기존에 존재하지 않는 해시태그인 경우에만 새로운 데이터 생성
             hashtag, created = HashTag.objects.get_or_create(name=name)
             product.hashtags.add(hashtag)
         product.save()
