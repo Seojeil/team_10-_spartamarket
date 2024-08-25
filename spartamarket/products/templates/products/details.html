@@ -3,7 +3,7 @@
 {% block content %}
 <h1> {{ product.title }} </h1>
 <p>
-    조화수: {{ product.hits }}
+    조회수: {{ product.hits }}
 </p>
 <p>
     작성자: 
@@ -39,6 +39,16 @@
 
 <p>
     가격: ￦{{ product.price }} 
+</p>
+
+<p>
+    {% if product.hashtags %}
+        {% for hashtag in hashtags %}
+            <a href="{% url 'index' %}?search={{ hashtag.name }}&search_type=hashtag">
+                #{{ hashtag }}
+            </a>&nbsp;
+        {% endfor %}
+    {% endif %}
 </p>
 
 <p>
