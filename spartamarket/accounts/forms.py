@@ -27,6 +27,7 @@ class CustomUserChangeForm(UserChangeForm):  # 사용자 변경을 위한 커스
         fields = (
             "username",  # 유저네임 추가
             "email",  # 이메일 필드 추가
+            
         )
 
     def __init__(self, *args, **kwargs):  # 초기화 함수 오버라이드

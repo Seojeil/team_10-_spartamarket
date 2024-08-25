@@ -100,13 +100,17 @@ def profile(request, username):
 def modify(request):
     if request.method == "POST":  # 요청이 POST일 경우 (사용자가 업데이트 폼을 제출했을 때)
         form = CustomUserChangeForm(request.POST, instance=request.user)  # 제출된 데이터를 바탕으로 폼 인스턴스 생성
+        image_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)  # 프로필 이미지 폼 추가
         if form.is_valid():  # 폼이 유효한 경우
             form.save()  # 사용자 정보를 업데이트
+            image_form.save()  # 프로필 이미지를 업데이트
             return redirect("accounts:profile", username=request.user.username)  # 'index' URL로 리디렉션
     else:
         form = CustomUserChangeForm(instance=request.user)  # GET 요청일 경우, 현재 사용자 데이터를 바탕으로 폼 생성
+        image_form = ProfileUpdateForm(instance=request.user.profile)  # 현재 프로필 데이터를 바탕으로 폼 생성
     context = {
-        "form": form
+        "form": form,
+        "image_form":image_form
         }  # 템플릿에 전달할 컨텍스트 생성
     return render(request, "accounts/modify.html", context)  # 'accounts/update.html' 템플릿을 렌더링
 

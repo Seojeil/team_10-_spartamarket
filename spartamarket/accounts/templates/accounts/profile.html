@@ -11,6 +11,7 @@
 <img src="{{ profile.image.url }}" alt="profile" width="300" height="350">
 
 
+
 {% if request.user.username == user.username %}
 <p><br>
     <a href="{% url 'accounts:modify' %}">
