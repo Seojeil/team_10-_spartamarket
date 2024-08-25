@@ -23,7 +23,6 @@ class CustomUserChangeForm(UserChangeForm):  # 사용자 변경을 위한 커스
     class Meta:
         model = User  # 현재 활성화된 사용자 모델을 설정
         fields = (
-            "username",  # 유저네임 추가
             "email",  # 이메일 필드 추가
         )
 

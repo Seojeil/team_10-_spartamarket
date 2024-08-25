@@ -3,11 +3,24 @@ from django.contrib.auth import get_user_model
 from django.forms import ValidationError
 
 
-class Product(models.Model):
-    title = models.CharField(max_length=50)
-    content = models.TextField()
+class TimeStampeModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+
+class HashTag(models.Model):
+    name = models.CharField(max_length=30, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Product(TimeStampeModel):
+    title = models.CharField(max_length=50)
+    content = models.TextField()
     image = models.ImageField(
         upload_to='images/',
         blank=True,
@@ -23,25 +36,29 @@ class Product(models.Model):
         get_user_model(),
         related_name='like_products',
     )
+    hashtags = models.ManyToManyField(
+        HashTag,
+        related_name='products',
+    )
 
     def clean(self):
         super().clean()
         if self.price >= 999999999:
-            raise ValidationError("판매 금액은 999,999,999 까지 입력 가능합니다.")
+            raise ValidationError(
+                "판매 금액은 999,999,999 까지 입력 가능합니다."
+                )
 
     def __str__(self):
         return self.title
 
 
-class Comment(models.Model):
+class Comment(TimeStampeModel):
     product = models.ForeignKey(
         Product,
         on_delete=models.CASCADE,
         related_name='comments'
     )
     content = models.CharField(max_length=120)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
     author = models.ForeignKey(
         get_user_model(),
         on_delete=models.CASCADE,
@@ -50,3 +67,4 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.content
+    
