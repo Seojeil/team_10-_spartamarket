@@ -13,39 +13,47 @@ from .models import Product, Comment, HashTag
 from .forms import ProductForm, CommentForm
 from django.db.models import Count
 
-# 제품 포스트 정렬 
+# 제품 포스트 정렬
+
+
 def index(request):
     sort = request.GET.get('sort', 'date')  # 디폴트 날짜로 정렬
     search_data = request.GET.get('search', '')
     search_type = request.GET.get('search_type', '')
-    if not search_data: # 검색 요청을 보낸 데이터가 없을때
+    if not search_data:  # 검색 요청을 보낸 데이터가 없을때
         if sort == 'likes':
-            products = Product.objects.annotate(like_count=Count('like_users')).order_by('-like_count', '-created_at') #찜 정렬
+            products = Product.objects.annotate(like_count=Count(
+                'like_users')).order_by('-like_count', '-created_at')  # 찜 정렬
         elif sort == 'comments':
-            products = Product.objects.annotate(comment_count=Count('comments')).order_by('-comment_count', '-created_at') # 댓글 정렬
-        else:  
-            products = Product.objects.all().order_by('-created_at') # 날짜 정렬
+            products = Product.objects.annotate(comment_count=Count(
+                'comments')).order_by('-comment_count', '-created_at')  # 댓글 정렬
+        else:
+            products = Product.objects.all().order_by('-created_at')  # 날짜 정렬
     else:
         if search_type == 'content':
-            products = Product.objects.filter(content__contains=search_data).order_by('-created_at')
+            products = Product.objects.filter(
+                content__contains=search_data).order_by('-created_at')
         elif search_type == 'username':
-            User = get_user_model() # 회원명이 필요하기 때문에 유저모델을 호출
-            try: # 검색한 데이터와 일치하는 유저명을 호출
+            User = get_user_model()  # 회원명이 필요하기 때문에 유저모델을 호출
+            try:  # 검색한 데이터와 일치하는 유저명을 호출
                 author = User.objects.get(username=search_data)
-            except User.DoesNotExist: # 유저가 존재하지 않을 경우 빈 쿼리 반환
+            except User.DoesNotExist:  # 유저가 존재하지 않을 경우 빈 쿼리 반환
                 products = Product.objects.none()
-            else: # 유저가 존재할 경우 해당 유저 필터링
-                products = Product.objects.filter(author=author).order_by('-created_at')
+            else:  # 유저가 존재할 경우 해당 유저 필터링
+                products = Product.objects.filter(
+                    author=author).order_by('-created_at')
         elif search_type == 'hashtag':
-            try: # username과 동일한 예외처리 과정 
+            try:  # username과 동일한 예외처리 과정
                 hashtag = HashTag.objects.get(name=search_data)
             except HashTag.DoesNotExist:
                 products = Product.objects.none()
-            else: 
-                products = Product.objects.filter(hashtags=hashtag).order_by('-created_at')
+            else:
+                products = Product.objects.filter(
+                    hashtags=hashtag).order_by('-created_at')
         else:
-            products = Product.objects.filter(title__contains=search_data).order_by('-created_at')
-    
+            products = Product.objects.filter(
+                title__contains=search_data).order_by('-created_at')
+
     context = {
         'products': products,
     }
