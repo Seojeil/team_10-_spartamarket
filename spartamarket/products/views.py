@@ -11,7 +11,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from .models import Product, Comment, HashTag
 from .forms import ProductForm, CommentForm
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.core.paginator import Paginator
 # 제품 포스트 정렬
 
@@ -33,6 +33,11 @@ def index(request):
         if search_type == 'content':
             products = Product.objects.filter(
                 content__contains=search_data).order_by('-created_at')
+        elif search_type == 'title_content':
+            products = Product.objects.filter(
+                Q(title__contains=search_data) | Q(
+                    content__contains=search_data)
+            ).order_by('-created_at')
         elif search_type == 'username':
             User = get_user_model()  # 회원명이 필요하기 때문에 유저모델을 호출
             try:  # 검색한 데이터와 일치하는 유저명을 호출
@@ -175,7 +180,8 @@ def like(request, pk):
 def create_hashtag(hashtags, product):
     hashtags = hashtags.split(',')
     for name in hashtags:
-        if name != '':
+        # 빈 데이터에 대한 예외처리(입력폼에 콤마만 연속으로 입력한 경우)
+        if name != '':  # 기존에 존재하지 않는 해시태그인 경우에만 새로운 데이터 생성
             hashtag, created = HashTag.objects.get_or_create(name=name)
             product.hashtags.add(hashtag)
         product.save()
