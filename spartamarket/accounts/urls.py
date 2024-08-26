@@ -12,7 +12,8 @@ urlpatterns = [
     path("change-password/", views.change_password, name="change_password"),
     path("delete/", views.delete, name="delete"),
     path("<str:username>/", views.profile, name = "profile"),
-    # path('<str:username>/profile/update/', views.profile_update, name='profile_update'),
+    path('<str:username>/follow/', views.follow, name = "follow"),
+    
 ]
 
 if settings.DEBUG:

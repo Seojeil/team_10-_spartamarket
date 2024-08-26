@@ -57,7 +57,7 @@ def signup(request):
             auth_login(request, user)
             return redirect("index")
         else:
-            # 폼 오류 메시지를 콘솔에 출력
+            
             print(form.errors)
     else:
         form = SignUpForm()
@@ -71,50 +71,52 @@ def signup(request):
 @require_http_methods(["GET", "POST"])
 def profile(request, username):
     user = get_object_or_404(get_user_model(), username=username)
-    selected_option = request.POST.get("product_option")
-    if request.POST.get("product_option") == 'all':
+    selected_option = request.POST.get("product_option")    
+    if selected_option == 'all':
         products = Product.objects.filter(author=user).order_by('-created_at')
     else:
         products = Product.objects.filter(like_users=user).order_by('-created_at')
-    context = {
-        "user": user,
-        'products': products,
-        'option': selected_option,
-    }
+        
     if request.method == 'POST':
-        form = ProfileUpdateForm(request.POST, request.FILES)
+        form = ProfileUpdateForm(request.POST, request.FILES, instance=user.profile)
         if form.is_valid():
             form.save()
-            return redirect('accounts:profile', username=request.user.username)  # 프로필 페이지로 리디렉션
+            return redirect('accounts:profile', username=user.username)  
     else:
-        form = ProfileUpdateForm(instance=request.user.profile)
+        form = ProfileUpdateForm(instance=user.profile)
         
     context = {
-        "username": username,
-        "profile": request.user.profile,
+        "user": user,
+        "profile": user.profile,
+        'products': products,
+        'option': selected_option,  
+        'form': form,
     }
+    
     return render(request, "accounts/profile.html", context)
 
 
-@require_http_methods(["GET", "POST"])  # 이 뷰는 GET과 POST 요청만 허용
+# 사용자 정보수정
+@require_http_methods(["GET", "POST"])  
 def modify(request):
-    if request.method == "POST":  # 요청이 POST일 경우 (사용자가 업데이트 폼을 제출했을 때)
-        form = CustomUserChangeForm(request.POST, instance=request.user)  # 제출된 데이터를 바탕으로 폼 인스턴스 생성
-        image_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)  # 프로필 이미지 폼 추가
-        if form.is_valid():  # 폼이 유효한 경우
-            form.save()  # 사용자 정보를 업데이트
-            image_form.save()  # 프로필 이미지를 업데이트
-            return redirect("accounts:profile", username=request.user.username)  # 'index' URL로 리디렉션
+    if request.method == "POST":  
+        form = CustomUserChangeForm(request.POST, instance=request.user)  
+        image_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile) 
+        if form.is_valid(): 
+            form.save() 
+            image_form.save()  
+            return redirect("accounts:profile", username=request.user.username)  
     else:
-        form = CustomUserChangeForm(instance=request.user)  # GET 요청일 경우, 현재 사용자 데이터를 바탕으로 폼 생성
-        image_form = ProfileUpdateForm(instance=request.user.profile)  # 현재 프로필 데이터를 바탕으로 폼 생성
+        form = CustomUserChangeForm(instance=request.user) 
+        image_form = ProfileUpdateForm(instance=request.user.profile) 
     context = {
         "form": form,
         "image_form":image_form
-        }  # 템플릿에 전달할 컨텍스트 생성
-    return render(request, "accounts/modify.html", context)  # 'accounts/update.html' 템플릿을 렌더링
+        } 
+    return render(request, "accounts/modify.html", context)  
 
 
+# 비밀번호 변경 기능
 @require_http_methods(["GET", "POST"])  # 이 뷰는 GET과 POST 요청만 허용
 def change_password(request):
     if request.method == "POST":  # 요청이 POST일 경우 (사용자가 비밀번호 변경 폼을 제출했을 때)
@@ -131,11 +133,26 @@ def change_password(request):
     return render(request, "accounts/change_password.html", context)  # 'accounts/change_password.html' 템플릿을 렌더링
 
 
-@require_POST  # 이 뷰는 POST 요청만 허용
+# 회원탈퇴 기능
+@require_POST 
 def delete(request):
-    if request.user.is_authenticated:  # 사용자가 인증된 상태일 경우
-        request.user.delete()  # 사용자 계정 삭제
-        auth_logout(request)  # 로그아웃 처리
-    return redirect("index")  # 'index' URL로 돌아가기
+    if request.user.is_authenticated:
+        request.user.delete()  
+        auth_logout(request) 
+    return redirect("index") 
 
+
+# 팔로우 기능
+@require_http_methods(["GET", "POST"])
+def follow(request, username):
+    if request.user.is_authenticated:
+        person = get_object_or_404(get_user_model(), username=username)
+        profile = person.profile
+        if profile != request.user.profile:
+            if profile.followers.filter(pk=request.user.profile.pk).exists():
+                profile.followers.remove(request.user.profile)
+            else:
+                profile.followers.add(request.user.profile)
+        return redirect('accounts:profile', person.username)
+    return redirect('accounts:login')
 
