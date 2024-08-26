@@ -11,7 +11,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from .models import Product, Comment, HashTag
 from .forms import ProductForm, CommentForm
-from django.db.models import Count
+from django.db.models import Count, Q
 
 # 제품 포스트 정렬
 
@@ -33,6 +33,10 @@ def index(request):
         if search_type == 'content':
             products = Product.objects.filter(
                 content__contains=search_data).order_by('-created_at')
+        elif search_type == 'title_content':
+            products = Product.objects.filter(
+                Q(title__contains=search_data) | Q(content__contains=search_data)
+                ).order_by('-created_at')
         elif search_type == 'username':
             User = get_user_model()  # 회원명이 필요하기 때문에 유저모델을 호출
             try:  # 검색한 데이터와 일치하는 유저명을 호출
