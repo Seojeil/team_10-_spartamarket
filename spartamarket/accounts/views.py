@@ -2,27 +2,31 @@ from django.shortcuts import (
     render,
     redirect,
     get_object_or_404,
-    )
+)
 from django.contrib.auth.forms import AuthenticationForm
 from django.views.decorators.http import (
     require_http_methods,
     require_POST
-    )
+)
 from django.contrib.auth import (
     login as auth_login,
     logout as auth_logout,
     update_session_auth_hash,
     get_user_model,
-    )
+)
 from django.contrib.auth.decorators import login_required
 from products.models import Product
-from .forms import SignUpForm,CustomUserChangeForm
+from .forms import SignUpForm, CustomUserChangeForm
 from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.decorators import user_passes_test
 from .forms import ProfileUpdateForm
 
+def not_logged_in(user):
+    return not user.is_authenticated
 
 
 # 로그인
+@user_passes_test(not_logged_in, login_url='index')
 @require_http_methods(['GET', 'POST'])
 def login(request):
     if request.method == 'POST':
@@ -35,10 +39,10 @@ def login(request):
             return redirect(next_url)
     else:
         form = AuthenticationForm()
-        
+
     context = {
         'form': form
-        }
+    }
     return render(request, 'accounts/login.html', context)
 
 # 로그아웃
@@ -49,6 +53,7 @@ def logout(request):
     return redirect('index')
 
 # 회원가입
+@user_passes_test(not_logged_in, login_url='index')
 def signup(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
@@ -62,7 +67,7 @@ def signup(request):
         form = SignUpForm()
     context = {
         "form": form
-        }
+    }
     return render(request, "accounts/signup.html", context)
 
 
@@ -75,7 +80,8 @@ def profile(request, username):
     if selected_option == 'all':
         products = Product.objects.filter(author=user).order_by('-created_at')
     else:
-        products = Product.objects.filter(like_users=user).order_by('-created_at')
+        products = Product.objects.filter(
+            like_users=user).order_by('-created_at')
         
     if request.method == 'POST':
         form = ProfileUpdateForm(request.POST, request.FILES, instance=user)
@@ -119,17 +125,20 @@ def modify(request):
 @require_http_methods(["GET", "POST"])  # 이 뷰는 GET과 POST 요청만 허용
 def change_password(request):
     if request.method == "POST":  # 요청이 POST일 경우 (사용자가 비밀번호 변경 폼을 제출했을 때)
-        form = PasswordChangeForm(request.user, request.POST)  # 제출된 데이터를 바탕으로 폼 인스턴스 생성
+        # 제출된 데이터를 바탕으로 폼 인스턴스 생성
+        form = PasswordChangeForm(request.user, request.POST)
         if form.is_valid():  # 폼이 유효한 경우
             form.save()  # 비밀번호를 변경
-            update_session_auth_hash(request, form.user)  # 세션의 인증 정보를 업데이트하여 로그아웃 방지
+            # 세션의 인증 정보를 업데이트하여 로그아웃 방지
+            update_session_auth_hash(request, form.user)
             return redirect("index")  # 'index' URL로 리디렉션
     else:
         form = PasswordChangeForm(request.user)  # GET 요청일 경우 빈 폼 인스턴스 생성
     context = {
-        'form':form
-        }  # 템플릿에 전달할 컨텍스트 생성
-    return render(request, "accounts/change_password.html", context)  # 'accounts/change_password.html' 템플릿을 렌더링
+        'form': form
+    }  # 템플릿에 전달할 컨텍스트 생성
+    # 'accounts/change_password.html' 템플릿을 렌더링
+    return render(request, "accounts/change_password.html", context)
 
 
 # 회원탈퇴 기능
@@ -153,6 +162,7 @@ def follow(request, username):
                 person.followers.add(request.user)
         return redirect('accounts:profile', person.username)
     return redirect('accounts:login')
+
 
 
 

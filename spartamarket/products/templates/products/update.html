@@ -6,6 +6,7 @@
 <form action="{% url 'products:update' product.pk %}" method='POST' enctype='multipart/form-data'>
     {% csrf_token %}
     {{ form.as_p }}
+    
     <p>
         {% if product.hashtags.exists %}
         현재 해시태그: 
