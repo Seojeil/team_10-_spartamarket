@@ -8,9 +8,8 @@
 </p>
 <p>
     작성자: 
-    <a href="{% url 'accounts:profile' username=product.author %}">
-        {{ product.author }}
-    </a>
+    <a href="{% url 'accounts:profile' product.author.username %}">
+        {{ product.author.username }}</a>
 </p>
 {% if request.user == product.author %}
 <form action="{% url 'products:delete' product.pk %}" method='POST'>
@@ -98,9 +97,8 @@
     {{ comment.content }}<br>
     <p>
         작성자: 
-        <a href="{% url 'accounts:profile' username=product.author %}">
-            {{ comment.author }}
-        </a>
+        <a href="{% url 'accounts:profile' comment.author.username %}">
+            {{ comment.author.username }}</a>
     </p>
     작성시간: {{ comment.created_at }}
     {% if request.user == comment.author %}

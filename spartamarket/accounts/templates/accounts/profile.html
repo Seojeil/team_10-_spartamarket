@@ -2,35 +2,63 @@
 
 {%block content%}
 
-
-<h1> {{ user.username }} 의 프로필 페이지 </h1>
+<!-- 프로필 -->
+<h1> {{ user.username }} 의 프로필 페이지 </h1><br>
 <p>
-    유저네임 : {{ user.username }}<br><br>
+    유저네임 : {{ user.username }}<br>
     email : {{ user.email }}
 </p>
 
+<!-- 프로필 사진 -->
+<img src="{{ user.image.url }}" alt="profile_image" width="300" height="350">
+
+<!-- 사용자 정보 수정 -->
 {% if request.user.username == user.username %}
-<p>
+<p><br>
     <a href="{% url 'accounts:modify' %}">
         <button>내 정보 수정</button>
     </a>
 </p>
 
-
+<!-- 회원 탈퇴 -->
 <p>
-    <form action={% url 'accounts:delete' %} method='POST'>
+    <form action= "{% url 'accounts:delete' %}" method='POST'>
         {% csrf_token %}
         <button type='submit'>회원 탈퇴</button>
     </form>
 </p>
 {% else %}
-<p>
-    {% comment %} 아직 개발중입니다. {% endcomment %}
-    <button>이 회원을 팔로우</button>
-</p>
 {% endif %}
 
-<form action="{% url 'accounts:profile' username=user.username %}">
+<!-- 팔로우 기능 -->
+<div>
+    <div>
+        팔로잉 : {{ user.followings.count }} / 팔로워 : {{ user.followers.all|length }}
+    </div>
+
+    {% if request.user != user %}
+    <div>
+        <form action="{% url 'accounts:follow' user.username%}" method='POST'>
+        {% csrf_token %}
+        {% if request.user in user.followers.all %}
+            <input type="submit" value='팔로우 취소'>
+        {% else %}
+            <input type="submit" value='팔로우'>
+        {% endif %}
+        </form>
+    </div>
+    {% endif %}
+</div>
+<div>
+    <p>팔로워 리스트:</p>
+    {% for follower in user.followers.all %}
+        <p>{{ follower.username }}</p>
+    {% endfor %}
+</div>
+
+<!-- 찜, 작성글 보기 및 목록 설정 -->
+<form action="{% url 'accounts:profile' user.username %}">
+    {% csrf_token %}
     <select name="product_option" id="product_option">
         <option value="liked">찜목록 보기</option>
         <option value="all">작성글 보기</option>
@@ -45,7 +73,7 @@
 <hr>
 {% for product in products %}
 <h3>
-    <a href='{% url 'products:details' product.pk %}'>
+    <a href='{% url "products:details" product.pk %}'>
         {{ product.title }}
     </a> 
     [{{ product.comments.count }}]
@@ -58,9 +86,8 @@
 </p>
 <p>
     작성자: 
-    <a href="{% url 'accounts:profile' username=product.author %}">
-        {{ product.author }}
-    </a>
+    <a href="{% url 'accounts:profile' product.author.username %}">
+        {{ product.author.username }}</a>
 </p>
 <p>
     작성시간: {{ product.created_at }}
@@ -68,4 +95,6 @@
 <hr>
 {% endfor %}
 
+
 {%endblock content%}
+

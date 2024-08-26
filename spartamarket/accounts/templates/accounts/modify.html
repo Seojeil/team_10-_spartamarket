@@ -1,13 +1,19 @@
-{%extends 'base.html'%}  <!-- 'base.html' 템플릿을 확장 -->
+{%extends 'base.html'%} 
 
 {%block content%}
-  <!-- 'content' 블록의 시작을 알림 -->
-<H1>회원 정보 수정</H1>  <!-- 제목: 회원 정보 수정 -->
 
-<form action="" method="post">  <!-- 정보 수정을 위한 폼, POST 메서드를 사용하여 데이터를 전송 -->
-    {%csrf_token%}  <!-- CSRF 공격을 방지하기 위한 토큰 -->
-    {{form.as_p}}  <!-- 폼 필드를 <p> 태그로 렌더링 -->
-    <button type="submit">수정</button>  <!-- 폼 제출 버튼 -->
+<!-- 사용자 정보 수정 -->
+<H1>회원 정보 수정</H1>  
+
+<form action="{% url 'accounts:modify' %}" method="post" enctype="multipart/form-data">
+    {%csrf_token%}  
+    {{form.as_p}} <br> 
+      <div>
+        <label for="id_image">프로필 사진 </label>
+        {{ image_form.image }} <br>
+      </div><br>
+      
+    <button type="submit">수정</button>  
 </form>
 
-{%endblock content%}  <!-- 'content' 블록의 끝을 알림 -->
+{%endblock content%} 
