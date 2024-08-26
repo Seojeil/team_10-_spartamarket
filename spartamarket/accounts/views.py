@@ -76,7 +76,7 @@ def signup(request):
 @require_http_methods(["GET", "POST"])
 def profile(request, username):
     user = get_object_or_404(get_user_model(), username=username)
-    selected_option = request.POST.get("product_option")    
+    selected_option = request.GET.get("product_option")    
     if selected_option == 'all':
         products = Product.objects.filter(author=user).order_by('-created_at')
     else:

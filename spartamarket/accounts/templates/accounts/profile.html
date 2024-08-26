@@ -57,7 +57,7 @@
 </div>
 
 <!-- 찜, 작성글 보기 및 목록 설정 -->
-<form method="POST">
+<form action="{% url 'accounts:profile' user.username %}">
     {% csrf_token %}
     <select name="product_option" id="product_option">
         <option value="liked">찜목록 보기</option>
