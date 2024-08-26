@@ -86,9 +86,8 @@
 </p>
 <p>
     작성자: 
-    <a href="{% url 'accounts:profile' username=product.author %}">
-        {{ product.author }}
-    </a>
+    <a href="{% url 'accounts:profile' product.author.username %}">
+        {{ product.author.username }}</a>
 </p>
 <p>
     작성시간: {{ product.created_at }}
