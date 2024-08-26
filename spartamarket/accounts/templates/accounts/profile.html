@@ -34,8 +34,7 @@
 </p>
 {% endif %}
 
-<form method="POST">
-    {% csrf_token %}
+<form action="{% url 'accounts:profile' username=user.username %}">
     <select name="product_option" id="product_option">
         <option value="liked">찜목록 보기</option>
         <option value="all">작성글 보기</option>
@@ -56,7 +55,7 @@
     [{{ product.comments.count }}]
 </h3>
 <p>
-    조화수: {{ product.hits }}
+    조회수: {{ product.hits }}
 </p>
 <p>
     찜한 사람: {{ product.like_users.count }} 명

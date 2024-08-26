@@ -19,7 +19,14 @@ class HashTag(models.Model):
 
 
 class Product(TimeStampeModel):
+    STATUS_CHOICES = [
+        ('판매중', '판매중'),
+        ('판매완료', '판매완료'),
+        ('예약중', '예약중'),
+    ]
     title = models.CharField(max_length=50)
+    status = models.CharField(
+        max_length=10, choices=STATUS_CHOICES, default='판매중')
     content = models.TextField()
     image = models.ImageField(
         upload_to='images/',
@@ -46,10 +53,10 @@ class Product(TimeStampeModel):
         if self.price >= 999999999:
             raise ValidationError(
                 "판매 금액은 999,999,999 까지 입력 가능합니다."
-                )
+            )
 
     def __str__(self):
-        return self.title
+        return f"{self.status} - {self.title}"
 
 
 class Comment(TimeStampeModel):
@@ -67,4 +74,3 @@ class Comment(TimeStampeModel):
 
     def __str__(self):
         return self.content
-    

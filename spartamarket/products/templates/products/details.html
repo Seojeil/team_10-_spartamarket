@@ -2,6 +2,7 @@
 
 {% block content %}
 <h1> {{ product.title }} </h1>
+<p>상태: {{ product.status }}</p> 
 <p>
     조회수: {{ product.hits }}
 </p>
@@ -38,7 +39,7 @@
 </p>
 
 <p>
-    가격: ￦{{ product.price }} 
+    가격: ￦ {{ product.price }} 
 </p>
 
 <p>
