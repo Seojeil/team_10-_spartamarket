@@ -18,8 +18,14 @@ from django.contrib.auth.decorators import login_required
 from products.models import Product
 from .forms import SignUpForm, CustomUserChangeForm
 from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.decorators import user_passes_test
 
 
+def not_logged_in(user):
+    return not user.is_authenticated
+
+
+@user_passes_test(not_logged_in, login_url='index')
 @require_http_methods(['GET', 'POST'])
 def login(request):
     if request.method == 'POST':
@@ -46,6 +52,7 @@ def logout(request):
     return redirect('index')
 
 
+@user_passes_test(not_logged_in, login_url='index')
 def signup(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
@@ -65,11 +72,10 @@ def signup(request):
 
 
 @login_required
-@require_http_methods(["GET", "POST"])
 def profile(request, username):
     user = get_object_or_404(get_user_model(), username=username)
-    selected_option = request.POST.get("product_option")
-    if request.POST.get("product_option") == 'all':
+    selected_option = request.GET.get("product_option")
+    if request.GET.get("product_option") == 'all':
         products = Product.objects.filter(author=user).order_by('-created_at')
     else:
         products = Product.objects.filter(
