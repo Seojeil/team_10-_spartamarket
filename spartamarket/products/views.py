@@ -12,7 +12,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Product, Comment, HashTag
 from .forms import ProductForm, CommentForm
 from django.db.models import Count
-
+from django.core.paginator import Paginator
 # 제품 포스트 정렬
 
 
@@ -54,8 +54,13 @@ def index(request):
             products = Product.objects.filter(
                 title__contains=search_data).order_by('-created_at')
 
+    # 페이징 처리 추가
+    paginator = Paginator(products, 10)  # 한 페이지에 10개의 게시물 표시
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     context = {
-        'products': products,
+        'page_obj': page_obj,
     }
     return render(request, 'products/index.html', context)
 

@@ -1,86 +1,89 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% block content %}
-<h1>글 목록</h1>
+  <h1>글 목록</h1>
 
-<p>
-    <a href="{% url 'products:create' %}">
-        <button>글작성하기</button>
-    </a>
-</p>
+  <p>
+    <a href="{% url 'products:create' %}"><button>글작성하기</button></a>
+  </p>
 
-<!-- 정렬기능 -->
-<p>
-    <a href="?sort=date">날짜순 | </a> 
-    <a href="?sort=likes">인기순 | </a>
+  <!-- 정렬기능 -->
+  <p>
+    <a href="?sort=date">날짜순 |</a>
+    <a href="?sort=likes">인기순 |</a>
     <a href="?sort=comments">댓글순</a>
-</p>
-<p>
-    <form action="{% url 'index' %}" method='GET'>
-        <input type="text" id="search" name="search">
-        <select name="search_type" id="lang">
-            <option value="title">제목</option>
-            <option value="content">내용</option>
-            <option value="username">회원명</option>
-            <option value="hashtag">해시태그</option>
-        </select>
-        <button type='submit'>검색</button>
-    </form>
-</p>
-{% if user.is_authenticated %}
+  </p>
+
+  <form action="{% url 'index' %}" method="GET">
+    <input type="text" id="search" name="search" />
+    <select name="search_type" id="lang">
+      <option value="title">제목</option>
+      <option value="content">내용</option>
+      <option value="username">회원명</option>
+      <option value="hashtag">해시태그</option>
+    </select>
+    <button type="submit">검색</button>
+  </form>
+  {% if user.is_authenticated %}
     <p>
-        <a href="{% url 'accounts:profile' username=user.username %}">
-            <button>마이페이지로</button>
-        </a>
+      <a href="{% url 'accounts:profile' username=user.username %}"><button>마이페이지로</button></a>
     </p>
-{% endif %}
+  {% endif %}
 
-
-<!-- Bootstrap 제품 카드 그리드  -->
-<div class="row row-cols-1 row-cols-md-3 g-4">
-    {% for product in products %}
-    <!-- 카드 -->
-    <div class="col">
+  <!-- Bootstrap 제품 카드 그리드 -->
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for product in page_obj %}
+      <!-- 카드 -->
+      <div class="col">
         <div class="card h-100">
+          <!-- 사진 -->
+          {% if product.image %}
+            <img src="{{ product.image.url }}" class="card-img-top mx-auto d-block" />
+          {% endif %}
 
-            <!-- 사진 -->
-            {% if product.image %}
-            <img src="{{ product.image.url }}" class="card-img-top mx-auto d-block">
+          <!-- 내용 -->
+          <div class="card-body">
+            <h5 class="card-title">
+              <a href="{% url 'products:details' product.pk %}">[{{ product.status }}]-&lt;{{ product.title }}&gt;</a>
+              ￦ : {{ product.price }}
+              [{{ product.comments.count }}]
+            </h5>
+            <p class="card-text">조회수: {{ product.hits }}</p>
+            <p class="card-text">찜한 사람: {{ product.like_users.count }} 명</p>
+            <p class="card-text">
+              작성자:
+              <a href="{% url 'accounts:profile' username=product.author %}">{{ product.author }}</a>
+            </p>
+            {% if product.hashtags.exists %}
+              <p>
+                {% for hashtag in product.hashtags.all %}
+                  <a href="{% url 'index' %}?search={{ hashtag.name }}&search_type=hashtag">#{{ hashtag.name }}</a>&nbsp;
+                {% endfor %}
+              </p>
             {% endif %}
+          </div>
 
-            <!-- 내용 -->
-            <div class="card-body">
-                <h5 class="card-title">
-                    <a href='{% url 'products:details' product.pk %}'>
-                        [{{ product.status }}]-&lt;{{ product.title }}&gt;  ￦ : {{ product.price }} 
-                    </a> 
-                    [{{ product.comments.count }}]
-                </h5>
-                <p class="card-text">조회수: {{ product.hits }}</p>
-                <p class="card-text">찜한 사람: {{ product.like_users.count }} 명</p>
-                <p class="card-text">작성자: 
-                    <a href="{% url 'accounts:profile' username=product.author %}">
-                        {{ product.author }}
-                    </a>
-                </p>
-                {% if product.hashtags.exists %}
-                <p>
-                    {% for hashtag in product.hashtags.all %}
-                        <a href="{% url 'index' %}?search={{ hashtag.name }}&search_type=hashtag">
-                            #{{ hashtag.name }}
-                        </a>&nbsp;
-                    {% endfor %}
-                </p>
-        {% endif %}
-            </div>
-
-            <!-- 날짜 표기 -->
-            <div class="card-footer">
-                <small class="text-muted">작성시간: {{ product.created_at }}</small>
-            </div>
+          <!-- 날짜 표기 -->
+          <div class="card-footer">
+            <small class="text-muted">작성시간: {{ product.created_at }}</small>
+          </div>
         </div>
-    </div>
+      </div>
     {% endfor %}
-</div>
+  </div>
+  <div class="pagination">
+    <span class="step-links">
+      {% if page_obj.has_previous %}
+        <a href="?page=1">&laquo; 처음</a>
+        <a href="?page={{ page_obj.previous_page_number }}">이전</a>
+      {% endif %}
 
-{% endblock content %}
+      <span class="current">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</span>
+
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">다음</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">마지막 &raquo;</a>
+      {% endif %}
+    </span>
+  </div>
+{% endblock %}
