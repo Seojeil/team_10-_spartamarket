@@ -3,6 +3,7 @@
 
 ### Customs ###
 /spartamarket/media/images/
+/spartamarket/media/images/profile_pics
 
 ### macOS ###
 # General
@@ -377,5 +378,7 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+
 
 # End of https://www.toptal.com/developers/gitignore/api/python,venv,visualstudiocode,pycharm,macos,windows
