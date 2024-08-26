@@ -53,8 +53,7 @@
             <p class="card-text">가격: ￦ {{ product.price }}</p>
             <p class="card-text">찜한 사람: {{ product.like_users.count }} 명</p>
             <p class="card-text">
-              작성자:
-              <a href="{% url 'accounts:profile' username=product.author %}">{{ product.author }}</a>
+              작성자: <a href="{% url 'accounts:profile' product.author.username %}">{{ product.author.username }}</a>
             </p>
             {% if product.hashtags.exists %}
               <p>
