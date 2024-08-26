@@ -22,7 +22,7 @@ from .forms import ProfileUpdateForm
 
 
 
-
+# 로그인
 @require_http_methods(['GET', 'POST'])
 def login(request):
     if request.method == 'POST':
@@ -41,14 +41,14 @@ def login(request):
         }
     return render(request, 'accounts/login.html', context)
 
-
+# 로그아웃
 @require_POST
 def logout(request):
     if request.user.is_authenticated:
         auth_logout(request)
     return redirect('index')
 
-
+# 회원가입
 def signup(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
@@ -57,7 +57,6 @@ def signup(request):
             auth_login(request, user)
             return redirect("index")
         else:
-            
             print(form.errors)
     else:
         form = SignUpForm()
@@ -67,6 +66,7 @@ def signup(request):
     return render(request, "accounts/signup.html", context)
 
 
+# 프로필 화면 구성
 @login_required
 @require_http_methods(["GET", "POST"])
 def profile(request, username):
@@ -78,16 +78,15 @@ def profile(request, username):
         products = Product.objects.filter(like_users=user).order_by('-created_at')
         
     if request.method == 'POST':
-        form = ProfileUpdateForm(request.POST, request.FILES, instance=user.profile)
+        form = ProfileUpdateForm(request.POST, request.FILES, instance=user)
         if form.is_valid():
             form.save()
             return redirect('accounts:profile', username=user.username)  
     else:
-        form = ProfileUpdateForm(instance=user.profile)
+        form = ProfileUpdateForm(instance=user)
         
     context = {
         "user": user,
-        "profile": user.profile,
         'products': products,
         'option': selected_option,  
         'form': form,
@@ -101,14 +100,14 @@ def profile(request, username):
 def modify(request):
     if request.method == "POST":  
         form = CustomUserChangeForm(request.POST, instance=request.user)  
-        image_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile) 
+        image_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user) 
         if form.is_valid(): 
             form.save() 
             image_form.save()  
             return redirect("accounts:profile", username=request.user.username)  
     else:
         form = CustomUserChangeForm(instance=request.user) 
-        image_form = ProfileUpdateForm(instance=request.user.profile) 
+        image_form = ProfileUpdateForm(instance=request.user) 
     context = {
         "form": form,
         "image_form":image_form
@@ -147,12 +146,15 @@ def delete(request):
 def follow(request, username):
     if request.user.is_authenticated:
         person = get_object_or_404(get_user_model(), username=username)
-        profile = person.profile
-        if profile != request.user.profile:
-            if profile.followers.filter(pk=request.user.profile.pk).exists():
-                profile.followers.remove(request.user.profile)
+        if person != request.user:
+            if person.followers.filter(pk=request.user.pk).exists():
+                person.followers.remove(request.user)
             else:
-                profile.followers.add(request.user.profile)
+                person.followers.add(request.user)
         return redirect('accounts:profile', person.username)
     return redirect('accounts:login')
+
+
+
+
 

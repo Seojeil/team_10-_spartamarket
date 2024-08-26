@@ -2,7 +2,6 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.urls import reverse  # URL 패턴을 문자열로 가져오기 위한 함수 임포트
-from .models import Profile
 
 
 
@@ -39,5 +38,5 @@ class CustomUserChangeForm(UserChangeForm):  # 사용자 변경을 위한 커스
 
 class ProfileUpdateForm(forms.ModelForm):
     class Meta:
-        model = Profile
+        model = User
         fields = ("image",)

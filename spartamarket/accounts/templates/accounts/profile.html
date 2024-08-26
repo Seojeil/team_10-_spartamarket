@@ -10,10 +10,9 @@
 </p>
 
 <!-- 프로필 사진 -->
-<img src="{{ profile.image.url }}" alt="profile" width="300" height="350">
+<img src="{{ user.image.url }}" alt="profile_image" width="300" height="350">
 
-
-
+<!-- 사용자 정보 수정 -->
 {% if request.user.username == user.username %}
 <p><br>
     <a href="{% url 'accounts:modify' %}">
@@ -21,6 +20,7 @@
     </a>
 </p>
 
+<!-- 회원 탈퇴 -->
 <p>
     <form action= "{% url 'accounts:delete' %}" method='POST'>
         {% csrf_token %}
@@ -30,9 +30,10 @@
 {% else %}
 {% endif %}
 
+<!-- 팔로우 기능 -->
 <div>
     <div>
-        팔로잉 : {{ user.profile.followings.count }} / 팔로워 : {{ user.profile.followers.all|length }}
+        팔로잉 : {{ user.followings.count }} / 팔로워 : {{ user.followers.all|length }}
     </div>
 
     {% if request.user != user %}
@@ -45,17 +46,17 @@
             <input type="submit" value='팔로우'>
         {% endif %}
         </form>
-    </div>  
+    </div>
     {% endif %}
 </div>
-
 <div>
     <p>팔로워 리스트:</p>
     {% for follower in user.followers.all %}
-        <p>{{ follower.user.username }}</p>
+        <p>{{ follower.username }}</p>
     {% endfor %}
 </div>
 
+<!-- 찜, 작성글 보기 및 목록 설정 -->
 <form method="POST">
     {% csrf_token %}
     <select name="product_option" id="product_option">
@@ -72,7 +73,7 @@
 <hr>
 {% for product in products %}
 <h3>
-    <a href='{% url 'products:details' product.pk %}'>
+    <a href='{% url "products:details" product.pk %}'>
         {{ product.title }}
     </a> 
     [{{ product.comments.count }}]
@@ -94,7 +95,6 @@
 </p>
 <hr>
 {% endfor %}
-
 
 
 {%endblock content%}
