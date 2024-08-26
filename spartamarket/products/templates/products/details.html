@@ -61,17 +61,23 @@
 <p>
     이 상품을 찜한 사람: {{ product.like_users.count }} 명
 </p>
+<!-- 찜하기 기능 -->
 {% if request.user.is_authenticated %}
 <p>
     <form action="{% url 'products:like' product.pk %}" method='POST'>
         {% csrf_token %}
     {% if request.user in product.like_users.all %}
-        <button type='submit'>취소하기</button>
+    <button class="btn btn-link text-danger">
+        <i class="fa-solid fa-heart fa-2x"></i>
+    </button>
     {% else %}
-        <button type='submit'>찜하기</button>
+    <button class="btn btn-link text-dark">
+        <i class="fa-regular fa-heart fa-2x"></i>
+    </button>
     {% endif %}
     </form>
 </p>
+
 <p>
     <form action="{% url 'products:comments' product.pk %}" method='POST'>
         {% csrf_token %}
