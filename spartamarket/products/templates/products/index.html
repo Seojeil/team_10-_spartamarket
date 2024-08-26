@@ -52,7 +52,7 @@
             <div class="card-body">
                 <h5 class="card-title">
                     <a href='{% url 'products:details' product.pk %}'>
-                        {{ product.status }}-{{ product.title }}
+                        [{{ product.status }}]-<{{ product.title }}>  ￦ : {{ product.price }} 
                     </a> 
                     [{{ product.comments.count }}]
                 </h5>
