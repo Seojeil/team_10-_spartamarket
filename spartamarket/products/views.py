@@ -13,6 +13,7 @@ from .models import Product, Comment, HashTag
 from .forms import ProductForm, CommentForm
 from django.db.models import Count, Q
 from django.core.paginator import Paginator
+from django.utils import timezone
 # 제품 포스트 정렬
 
 
@@ -126,7 +127,9 @@ def update(request, pk):
             form = ProductForm(request.POST, request.FILES, instance=product)
             hashtags = request.POST.get('hashtags')
             if form.is_valid():
-                product = form.save()
+                product = form.save(commit=False)
+                product.updated_at = timezone.now()
+                product.save()
                 if hashtags:
                     create_hashtag(hashtags, product)
                 return redirect("products:details", product.pk)
