@@ -39,7 +39,7 @@
 
 ## ERD/Framework
 - ![ERD](ERD.jpg)
-- 
+- ![Framework](Framework.png)
 
 ## Troubling/Troubleshooting
 - 서재일: 브랜치 생성을 잊고 dev에서 작업함.
