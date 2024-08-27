@@ -1,10 +1,44 @@
 {% extends 'base.html' %}
+{% block head %}
+<style>
+  .search-container {
+      display: flex;
+      align-items: center;
+  }
+
+  .search-container .btn-group,
+  .search-container form {
+      display: flex;
+      align-items: center;
+      margin-right: 10px;
+  }
+
+  button {
+      writing-mode: horizontal-tb; /* 글씨가 가로로 쓰이도록 설정 */
+      transform: rotate(0deg); /* 글씨 회전을 0도로 설정 */
+      white-space: nowrap; /* 텍스트가 줄 바꿈되지 않도록 설정 */
+      padding: 5px 10px; /* 버튼의 크기를 적절하게 조정 */
+      height: auto; /* 높이를 자동으로 조정 */
+      width: auto; /* 너비를 자동으로 조정 */
+  }
+
+  .search-container form input[type="text"] {
+      margin-right: 10px;
+  }
+</style>
+<script>
+  function setSearchType(type, text) {
+      document.getElementById('search_type').value = type;
+      document.getElementById('btnGroupDrop1').textContent = text;
+  }
+</script>
+{% endblock head %}
 
 {% block content %}
-  <h1>글 목록</h1>
+  <h1>상품 목록</h1>
 
   <p>
-    <a href="{% url 'products:create' %}"><button>글작성하기</button></a>
+    <a href="{% url 'products:create' %}"><button type="submit" class="btn btn-outline-secondary">상품 등록</button></a>
   </p>
 
   <!-- 정렬기능 -->
@@ -14,23 +48,29 @@
     <a href="?sort=comments">댓글순</a>
   </p>
 
-  <form action="{% url 'index' %}" method="GET">
-    <input type="text" id="search" name="search" />
-    <select name="search_type" id="lang">
-      <option value="title_content">제목/내용</option>
-      <option value="title">제목</option>
-      <option value="content">내용</option>
-      <option value="username">회원명</option>
-      <option value="hashtag">해시태그</option>
-    </select>
-    <button type="submit">검색</button>
-  </form>
+  <!-- 검색 유형과 검색 폼을 한 줄에 배치 -->
+  <div class="search-container">
+    <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+      <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        검색 유형
+      </button>
+      <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+        <a class="dropdown-item" href="#" onclick="setSearchType('title_content', '제목/내용')">제목/내용</a>
+        <a class="dropdown-item" href="#" onclick="setSearchType('title', '제목')">제목</a>
+        <a class="dropdown-item" href="#" onclick="setSearchType('content', '내용')">내용</a>
+        <a class="dropdown-item" href="#" onclick="setSearchType('username', '회원명')">회원명</a>
+        <a class="dropdown-item" href="#" onclick="setSearchType('hashtag', '해시태그')">해시태그</a>
+      </div>
+    </div>
 
-  {% if user.is_authenticated %}
-    <p>
-      <a href="{% url 'accounts:profile' username=user.username %}"><button>마이페이지로</button></a>
-    </p>
-  {% endif %}
+    <form action="{% url 'index' %}" method="GET">
+      <input type="hidden" id="search_type" name="search_type" value="title_content" />
+      <input type="text" id="search" name="search" class="form-control" placeholder="검색어를 입력하세요" />
+      <button type="submit" class="btn btn-outline-secondary">검색</button>
+    </form>
+  </div>
+
+<p></p>
 
   <!-- Bootstrap 제품 카드 그리드 -->
   <div class="row row-cols-1 row-cols-md-3 g-4">
