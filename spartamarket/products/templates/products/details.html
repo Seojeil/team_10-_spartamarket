@@ -1,101 +1,10 @@
 {% extends "base.html" %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/details.css' %}">
+<script src="{% static 'js/details.js' %}"></script>
 
-{% block head %}
-<!-- Font Awesome 추가 -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-<style>
-    .heart-icon {
-        color: #333;
-        font-size: 2.5rem; /* 하트 크기를 2.5rem으로 조정 */
-        cursor: pointer;
-    }
-    
-    .heart-icon.active {
-        color: #e74c3c !important; /* 찜한 상태일 때 빨간색 적용 */
-    }
-
-  /* 페이지 전체를 가운데 정렬 */
-  .content-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-  }
-
-  /* 박스 스타일 */
-  .section-box {
-      border: 1px solid #ddd; /* 연한 회색 테두리 */
-      border-radius: 8px; /* 둥근 모서리 */
-      padding: 20px; /* 내부 여백 */
-      margin-bottom: 20px; /* 섹션 간 간격 */
-      width: 100%;
-      max-width: 800px; /* 최대 너비 */
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 약간의 그림자 */
-  }
-
-  /* 검색 컨테이너 스타일 */
-  .search-container {
-      display: flex;
-      align-items: center;
-      margin-bottom: 20px;
-  }
-
-  .search-container .btn-group,
-  .search-container form {
-      display: flex;
-      align-items: center;
-      margin-right: 10px;
-  }
-
-  button {
-      writing-mode: horizontal-tb; /* 글씨가 가로로 쓰이도록 설정 */
-      transform: rotate(0deg); /* 글씨 회전을 0도로 설정 */
-      white-space: nowrap; /* 텍스트가 줄 바꿈되지 않도록 설정 */
-      padding: 5px 10px; /* 버튼의 크기를 적절하게 조정 */
-      height: auto; /* 높이를 자동으로 조정 */
-      width: auto; /* 너비를 자동으로 조정 */
-  }
-
-  .search-container form input[type="text"] {
-      margin-right: 10px;
-  }
-
-  /* 카드 스타일 */
-  .card-img-top {
-      max-height: 200px; /* 이미지 최대 높이 설정 */
-      object-fit: cover; /* 이미지 비율 유지 */
-  }
-
-  .pagination {
-      margin-top: 20px;
-  }
-
-  /* 버튼 그룹 스타일 */
-  .button-group {
-      display: flex;
-      gap: 10px; /* 버튼 사이의 간격 설정 */
-  }
-
-  /* 가운데 정렬 추가 */
-  .button-group,
-  .pagination,
-  .card-body,
-  .card-footer {
-      text-align: center;
-  }
-
-  /* CSS 선택자 우선순위를 높이기 위해 태그, 클래스, 속성 등을 결합 */
-  .content-container .heart-icon.active {
-      color: #e74c3c !important; /* 중요도를 높여 강제로 빨간색 적용 */
-  }
-</style>
-<script>
-  function setSearchType(type, text) {
-      document.getElementById('search_type').value = type;
-      document.getElementById('btnGroupDrop1').textContent = text;
-  }
-</script>
-{% endblock head %}
 
 {% block content %}
 <br>
@@ -138,6 +47,7 @@
     </p>
   </div>
   {% endif %}
+  
   <!-- 관리자 기능 섹션 -->
   {% if request.user == product.author %}
   <div class="section-box">

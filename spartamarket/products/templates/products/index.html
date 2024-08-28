@@ -1,38 +1,9 @@
 {% extends 'base.html' %}
-{% block head %}
-<style>
-  .search-container {
-      display: flex;
-      align-items: center;
-  }
-
-  .search-container .btn-group,
-  .search-container form {
-      display: flex;
-      align-items: center;
-      margin-right: 10px;
-  }
-
-  button {
-      writing-mode: horizontal-tb; /* 글씨가 가로로 쓰이도록 설정 */
-      transform: rotate(0deg); /* 글씨 회전을 0도로 설정 */
-      white-space: nowrap; /* 텍스트가 줄 바꿈되지 않도록 설정 */
-      padding: 5px 10px; /* 버튼의 크기를 적절하게 조정 */
-      height: auto; /* 높이를 자동으로 조정 */
-      width: auto; /* 너비를 자동으로 조정 */
-  }
-
-  .search-container form input[type="text"] {
-      margin-right: 10px;
-  }
-</style>
-<script>
-  function setSearchType(type, text) {
-      document.getElementById('search_type').value = type;
-      document.getElementById('btnGroupDrop1').textContent = text;
-  }
-</script>
-{% endblock head %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}">
+<script src="{% static 'js/index.js' %}"></script>
+{% endblock %}
 
 {% block content %}
   <h1>상품 목록</h1>
