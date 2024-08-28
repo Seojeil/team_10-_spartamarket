@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/details.css' %}">
+<script src="{% static 'js/details.js' %}"></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+
+{% block content %}
+<br>
+<br>
+<div class="content-container">
+  
+  <!-- 제품 정보 섹션 -->
+  <div class="section-box">
+    <h2>{{ product.title }}</h2>
+    <ul>
+      <li>상태: {{ product.status }}</li>
+      <li>조회수: {{ product.hits }}</li>
+      <li>작성자: 
+          <a href="{% url 'accounts:profile' product.author.username %}">
+              {{ product.author.username }}</a>
+      </li>
+      <li>작성시간: {{ product.created_at }}</li>
+      <li>가격: ￦ {{ product.price }}</li>
+    </ul>
+  </div>
+
+  <!-- 이미지 섹션 -->
+  {% if product.image %}
+  <div class="section-box">
+    <img src="{{ product.image.url }}" alt="상품 이미지" class="img-fluid">
+    <br>
+    <br>
+    <p>{{ product.content }}</p>
+  </div>
+  {% endif %}
+
+
+  <!-- 해시태그 섹션 -->
+  {% if product.hashtags.exists %}
+  <div class="section-box">
+    <p>
+      {% for hashtag in product.hashtags.all %}
+        <a href="{% url 'index' %}?search={{ hashtag.name }}&search_type=hashtag">#{{ hashtag.name }}</a>&nbsp;
+      {% endfor %}
+    </p>
+  </div>
+  {% endif %}
+  
+  <!-- 관리자 기능 섹션 -->
+  {% if request.user == product.author %}
+  <div class="section-box">
+    <div class="button-group">
+      <form action="{% url 'products:delete' product.pk %}" method='POST'>
+        {% csrf_token %}
+        <button type='submit' class="btn btn-warning">게시글 삭제</button>
+      </form>
+
+      <form action="{% url 'products:update' product.pk %}" method='GET'>
+        <button type='submit' class="btn btn-warning">게시글 수정</button>
+      </form>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- 찜하기 및 댓글 섹션 -->
+  <div class="section-box">
+    <p>이 상품을 찜한 사람: {{ product.like_users.count }} 명</p>
+
+    {% if request.user.is_authenticated %}
+    <form action="{% url 'products:like' product.pk %}" method='POST'>
+      {% csrf_token %}
+      <button type='submit' class="btn btn-link">
+        <i class="fa{% if request.user in product.like_users.all %}s active{% else %}r{% endif %} fa-heart heart-icon"></i>
+      </button>
+    </form>
+
+    <form action="{% url 'products:comments' product.pk %}" method='POST'>
+      {% csrf_token %}
+      {{ comment_form.as_p }}
+      <button type='submit' class="btn btn-warning">댓글 작성</button>
+    </form>
+    {% else %}
+    <p>
+      <a href="{% url 'accounts:login' %}?next={{ request.path }}">
+        <button class="btn btn-primary">로그인하고 서비스 이용하기</button>
+      </a>
+    </p>
+    {% endif %}
+  </div>
+
+
+  <!-- 댓글 목록 섹션 -->
+  <div class="section-box">
+    {% for comment in comments %}
+    <p>{{ comment.content }}</p>
+    <p>
+      작성자: 
+      <a href="{% url 'accounts:profile' comment.author.username %}">
+          {{ comment.author.username }}</a>
+    </p>
+    <p>작성시간: {{ comment.created_at }}</p>
+
+    {% if request.user == comment.author %}
+    <form action="{% url 'products:comments_delete' comment.pk %}" method='POST'>
+      {% csrf_token %}
+      <button type='submit' class="btn btn-danger">댓글 삭제</button>
+    </form>
+    {% endif %}
+    <hr>
+    {% endfor %}
+  </div>
+
+  <p>
+    <a href="{% url 'index' %}">
+      <button class="btn btn-secondary">상품 목록</button>
+    </a>
+  </p>
+
+</div>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/signup.css' %}">
+{% endblock extra_css %}
+
+{% block content %}
+
+  <div class="wrapper fadeInDown">
+    <div id="formContent">
+      <!-- Tabs Titles -->
+
+
+      <!-- Signup Form -->
+      <form action="{% url 'accounts:signup' %}" method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" class="fadeIn fourth" value="회원가입">
+      </form>
+
+      <!-- Already have an account -->
+      <div id="formFooter">
+        <a class="underlineHover" href="{% url 'accounts:login' %}">이미 계정이 있으신가요? 로그인</a>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

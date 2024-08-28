@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/profile.css' %}">
+{% endblock extra_css %}
+
+
+{% block content %}
+  <div class="content-container">
+    <!-- 프로필 정보 섹션 -->
+    <div class="section-box">
+      <h2>{{ user.username }}의 프로필 페이지</h2>
+      <p>유저네임 : {{ user.username }}</p>
+      <p>Email : {{ user.email }}</p>
+
+      <!-- 프로필 사진 -->
+      {% if user.image %}
+        <img src="{{ user.image.url }}" alt="profile_image" class="profile-image" width="300" height="350" />
+      {% endif %}
+    </div>
+
+    <!-- 사용자 정보 수정 및 회원 탈퇴 섹션 -->
+    {% if request.user.username == user.username %}
+      <div class="section-box">
+        <div class="button-group">
+          <a href="{% url 'accounts:modify' %}"><button class="btn btn-warning">내 정보 수정</button></a>
+          <form action="{% url 'accounts:delete' %}" method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">회원 탈퇴</button>
+          </form>
+        </div>
+      </div>
+    {% endif %}
+
+    <!-- 팔로우 기능 섹션 -->
+    <div class="section-box">
+      <p>팔로잉: {{ user.followings.count }} / 팔로워: {{ user.followers.all|length }}</p>
+
+      {% if request.user != user %}
+        <div>
+          <form action="{% url 'accounts:follow' user.username %}" method="POST">
+            {% csrf_token %}
+            {% if request.user in user.followers.all %}
+              <input type="submit" class="btn btn-warning" value="팔로우 취소" />
+            {% else %}
+              <input type="submit" class="btn btn-primary" value="팔로우" />
+            {% endif %}
+          </form>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- 팔로워 리스트 섹션 -->
+    <div class="section-box">
+      <h3>팔로워 리스트:</h3>
+      {% for follower in user.followers.all %}
+        <p>{{ follower.username }}</p>
+      {% endfor %}
+    </div>
+
+    <!-- 찜, 작성글 보기 및 목록 설정 섹션 -->
+    <div class="section-box">
+      <form action="{% url 'accounts:profile' user.username %}" method="GET">
+        {% csrf_token %}
+        <select name="product_option" id="product_option" class="form-control">
+          <option value="liked">찜목록 보기</option>
+          <option value="all">작성글 보기</option>
+        </select>
+        <button type="submit" class="btn btn-secondary mt-2">확인</button>
+      </form>
+
+      {% if option == 'all' %}
+        <h3>{{ user.username }}님이 작성한 글 목록</h3>
+      {% else %}
+        <h3>{{ user.username }}님이 찜한 목록</h3>
+      {% endif %}
+      <hr />
+      {% for product in products %}
+        <div class="section-box">
+          <h3>
+            <a href="{% url 'products:details' product.pk %}">{{ product.title }}</a>
+            [{{ product.comments.count }}]
+          </h3>
+          <p>조회수: {{ product.hits }}</p>
+          <p>찜한 사람: {{ product.like_users.count }} 명</p>
+          <p>
+            작성자:
+            <a href="{% url 'accounts:profile' product.author.username %}">{{ product.author.username }}</a>
+          </p>
+          <p>작성시간: {{ product.created_at }}</p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/create.css' %}">
+<script src="{% static 'js/create.js' %}"></script>
+{% endblock %}
+
+
+{% block content %}
+
+  <div id="formContent">
+    <h1>글작성하기</h1>
+    <form action="{% url 'products:create' %}" method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <div class="form-group">
+        <label for="hashtags">해시태그:</label>
+        <input type="text" id="hashtags" name="hashtags" oninput="HachTagInput(event)" size="30" maxlength="50" placeholder="쉼표로 구분해서 입력하세요.">
+      </div>
+
+
+      <div class="button-container">
+        <button type="submit">작성완료</button>
+        <div class="back-button">
+          <a href="{% url 'index' %}">
+            <button type="button">돌아가기</button>
+          </a>
+        </div>
+      </div>
+    </form>
+  </div>
+
+{% endblock content %}
