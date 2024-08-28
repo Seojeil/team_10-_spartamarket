@@ -1,63 +1,9 @@
 {% extends "base.html" %}
+{% load static %}
 
-{% block head %}
-<style>
-    /* 박스 스타일 */
-    .section-box {
-        border: 1px solid #ddd; /* 연한 회색 테두리 */
-        border-radius: 8px; /* 둥근 모서리 */
-        padding: 20px; /* 내부 여백 */
-        margin-bottom: 20px; /* 섹션 간 간격 */
-        width: 100%;
-        max-width: 800px; /* 최대 너비 */
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 약간의 그림자 */
-        text-align: center;
-    }
-
-    /* 페이지 전체를 가운데 정렬 */
-    .content-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin-top: 20px;
-    }
-
-    /* 프로필 이미지 스타일 */
-    .profile-image {
-        border-radius: 50%; /* 이미지를 원형으로 만들기 */
-        width: 150px; /* 너비 설정 */
-        height: 150px; /* 높이 설정 */
-        object-fit: cover; /* 이미지가 잘리지 않고 잘 맞도록 설정 */
-        border: 2px solid #ddd; /* 테두리 추가 */
-        margin-bottom: 20px;
-    }
-
-    /* 버튼 스타일 */
-    .btn-custom {
-        background-color: #56baed;
-        border: none;
-        color: white;
-        padding: 10px 20px;
-        font-size: 16px;
-        border-radius: 5px;
-        cursor: pointer;
-        margin-top: 20px;
-    }
-
-    .btn-custom:hover {
-        background-color: #39ace7;
-    }
-
-    .form-group {
-        text-align: left;
-        margin-bottom: 20px;
-    }
-
-    label {
-        font-weight: bold;
-    }
-</style>
-{% endblock head %}
+{% block extra_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/modify.css' %}">
+{% endblock extra_css %}
 
 {% block content %}
 <div class="content-container">
